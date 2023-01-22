@@ -10,6 +10,10 @@
     <include file="02-Skill-table-change.xml" relativeToChangelogFile="true"/>
     <include file="03-Skill-table-change.xml" relativeToChangelogFile="true"/>
     <include file="01-Specialty-table-create.xml" relativeToChangelogFile="true"/>
+    <include file="01-Developer-table-create.xml" relativeToChangelogFile="true"/>
+    <include file="01-Developer2Skills-table-create.xml" relativeToChangelogFile="true"/>
+    <include file="02-Developer2Skill-table-addTie.xml" relativeToChangelogFile="true"/>
+
 <!--    <include file="01-Specialty-table.xml" relativeToChangelogFile="true"/>-->
 <!--    <include file="01-Developer-table.xml" relativeToChangelogFile="true"/>-->
 
