@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet author="DmitryElkin" id="skills_20">
+        <addForeignKeyConstraint baseTableName="skills_tbl" baseColumnNames="statusId"
+                                 constraintName="skills_status_tie"
+                                 referencedTableName="status_tbl"
+                                 referencedColumnNames="id"
+                                 onDelete="RESTRICT"
+                                 onUpdate="CASCADE"
+        />
+    </changeSet>
+
+</databaseChangeLog>

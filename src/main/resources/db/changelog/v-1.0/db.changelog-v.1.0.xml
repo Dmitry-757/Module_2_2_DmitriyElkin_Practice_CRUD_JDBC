@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <include file="01-Status-table-create.xml" relativeToChangelogFile="true"/>
+    <include file="01-Skill-table-create.xml" relativeToChangelogFile="true"/>
+    <include file="02-Skill-table-change.xml" relativeToChangelogFile="true"/>
+    <include file="03-Skill-table-change.xml" relativeToChangelogFile="true"/>
+    <include file="01-Specialty-table-create.xml" relativeToChangelogFile="true"/>
+<!--    <include file="01-Specialty-table.xml" relativeToChangelogFile="true"/>-->
+<!--    <include file="01-Developer-table.xml" relativeToChangelogFile="true"/>-->
+
+</databaseChangeLog>
