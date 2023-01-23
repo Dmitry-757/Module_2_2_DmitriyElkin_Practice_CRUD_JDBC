@@ -24,19 +24,26 @@ public class Specialty implements BaseModelsMethsI {
     }
 
     private long id;
-    private String Name;
+    private String name;
     private Status status;
 
-    public Specialty(long id2, String name) {
-        id = id2;
-        Name = name;
+    public Specialty(long id, String name) {
+        this.id = id;
+        this.name = name;
         status = Status.ACTIVE;
     }
 
     public Specialty(String name) {
-        Name = name;
+        this.name = name;
         status = Status.ACTIVE;
     }
+
+    public Specialty(long id, String name, int statusId) {
+        this.id = id;
+        this.name = name;
+        status = Status.getStatus(statusId);
+    }
+
 
     public static long getLastId() {
         return lastId;
@@ -70,11 +77,11 @@ public class Specialty implements BaseModelsMethsI {
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        name = name;
     }
 
     public Status getStatus() {
@@ -86,12 +93,12 @@ public class Specialty implements BaseModelsMethsI {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Specialty specialty = (Specialty) o;
-        return id == specialty.id && Name.equals(specialty.Name) && status == specialty.status;
+        return id == specialty.id && name.equals(specialty.name) && status == specialty.status;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, Name, status);
+        return Objects.hash(id, name, status);
     }
 
 
@@ -99,7 +106,7 @@ public class Specialty implements BaseModelsMethsI {
     public String toString() {
         return "Specialty{" +
                 "id=" + id +
-                ", Name='" + Name + '\'' +
+                ", Name='" + name + '\'' +
                 ", status=" + status +
                 '}';
     }

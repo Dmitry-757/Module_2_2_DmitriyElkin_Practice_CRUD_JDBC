@@ -7,10 +7,18 @@ public enum Status {
     private int status;
 
     Status(int i) {
-        this.status = i;
+        status = i;
     }
 
-    public int getStatus() {
+    public int getStatusValue() {
         return status;
     }
+
+    public static Status getStatus(int i){
+        return switch (i){
+            case 1-> Status.ACTIVE;
+            default -> Status.DELETED;
+        };
+    }
+
 }

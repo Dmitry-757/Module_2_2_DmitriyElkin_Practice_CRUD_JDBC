@@ -26,10 +26,10 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
             """
                     INSERT developer_db.developer_tbl(id, firstName, lastName, skillsId, specialtyId, statusId) 
                     VALUES (?, ?, ?, ?, ?, ?)""";
-    private static final String SELECT_BY_ID = "select id, firstName, lastName, skillsId, specialtyId, statusId from developer_db.developer_tbl where id = ?";
-    private static final String SELECT_ALL = "select * from developer_db.developer_tbl";
-    private static final String DELETE_SQL = "delete from developer_db.developer_tbl where id = ?;";
-    private static final String UPDATE_SQL = "update developer_db.developer_tbl set firstName = ?, lastName = ?, " +
+    private static final String SELECT_BY_ID = "select id, firstName, lastName, skillsId, specialtyId, statusId from developer_tbl where id = ?";
+    private static final String SELECT_ALL = "select * from developers_tbl";
+    private static final String DELETE_SQL = "delete from developer_tbl where id = ?;";
+    private static final String UPDATE_SQL = "update developer_tbl set firstName = ?, lastName = ?, " +
             "skillsId = ?, specialtyId = ?, statusId = ? where id = ?;";
 
 
