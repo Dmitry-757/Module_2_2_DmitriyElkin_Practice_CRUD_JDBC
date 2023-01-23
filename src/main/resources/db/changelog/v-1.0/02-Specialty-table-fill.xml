@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet author="DmitryElkin" id="specialty_02">
+        <insert tableName="specialty_tbl">
+            <column name="name" value="java developer"/>
+            <column name="statusId" value="1"/>
+        </insert>
+        <insert tableName="specialty_tbl">
+            <column name="name" value="qa"/>
+            <column name="statusId" value="2"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>
