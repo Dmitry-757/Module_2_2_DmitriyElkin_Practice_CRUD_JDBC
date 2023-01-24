@@ -80,7 +80,7 @@ public class SpecialtyRepositoryImpl implements SpecialtyRepository {
         //*** add ***
         if (item.getId() <= 0) {
             item.setNewId();
-            add(item);
+            insert(item);
         }
 
         //*** update ***
@@ -88,7 +88,7 @@ public class SpecialtyRepositoryImpl implements SpecialtyRepository {
     }
 
 
-    public void add(Specialty item){
+    public void insert(Specialty item){
         long statusId = 0;
         String selectStatement = "select * from status_tbl where status_value = "+item.getStatus().getStatusValue();
         try (Connection connection = DBConnection.getConnection();

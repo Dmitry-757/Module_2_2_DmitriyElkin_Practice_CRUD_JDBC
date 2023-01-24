@@ -4,8 +4,6 @@ import com.Dmitry_Elkin.PracticeTaskCRUD.model.Specialty;
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Status;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class SpecialtyRepositoryImplTest {
 
     @Test
@@ -17,7 +15,7 @@ class SpecialtyRepositoryImplTest {
     @Test
     void add(){
         Specialty specialty = new Specialty("c# developer");
-        (new SpecialtyRepositoryImpl()).add(
+        (new SpecialtyRepositoryImpl()).insert(
                 specialty
         );
         System.out.println("new item is " + specialty);
