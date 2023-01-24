@@ -81,7 +81,7 @@ public class Specialty implements BaseModelsMethsI {
     }
 
     public void setName(String name) {
-        name = name;
+        this.name = name;
     }
 
     public Status getStatus() {
