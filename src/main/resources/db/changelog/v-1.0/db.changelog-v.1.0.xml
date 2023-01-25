@@ -16,6 +16,8 @@
     <include file="04-Status-table-fill.xml" relativeToChangelogFile="true"/>
     <include file="04-Specialty-table-fill.xml" relativeToChangelogFile="true"/>
     <include file="04-Skills-table-fill.xml" relativeToChangelogFile="true"/>
+    <include file="04-Developer-table-fill.xml" relativeToChangelogFile="true"/>
+    <include file="04-Dev2Skills-table-fill.xml" relativeToChangelogFile="true"/>
 
 <!--    <include file="01-Specialty-table.xml" relativeToChangelogFile="true"/>-->
 <!--    <include file="01-Developer-table.xml" relativeToChangelogFile="true"/>-->

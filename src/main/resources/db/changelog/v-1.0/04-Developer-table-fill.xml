@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet author="DmitryElkin" id="developers_04">
+        <insert tableName="developers_tbl">
+            <column name="id" value="1"/>
+            <column name="firstName" value="Vasja"/>
+            <column name="lastName" value="Pupkin"/>
+            <column name="specialtyId" value="1"/>
+            <column name="statusId" value="1"/>
+        </insert>
+
+        <insert tableName="developers_tbl">
+            <column name="id" value="2"/>
+            <column name="firstName" value="John"/>
+            <column name="lastName" value="Dow"/>
+            <column name="specialtyId" value="2"/>
+            <column name="statusId" value="1"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>
