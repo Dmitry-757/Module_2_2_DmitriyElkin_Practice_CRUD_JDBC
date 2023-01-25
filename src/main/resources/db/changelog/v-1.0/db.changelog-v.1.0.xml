@@ -13,8 +13,9 @@
     <include file="01-Developer-table-create.xml" relativeToChangelogFile="true"/>
     <include file="01-Developer2Skills-table-create.xml" relativeToChangelogFile="true"/>
     <include file="02-Developer2Skill-table-addTie.xml" relativeToChangelogFile="true"/>
-    <include file="02-Status-table-fill.xml" relativeToChangelogFile="true"/>
-    <include file="02-Specialty-table-fill.xml" relativeToChangelogFile="true"/>
+    <include file="04-Status-table-fill.xml" relativeToChangelogFile="true"/>
+    <include file="04-Specialty-table-fill.xml" relativeToChangelogFile="true"/>
+    <include file="04-Skills-table-fill.xml" relativeToChangelogFile="true"/>
 
 <!--    <include file="01-Specialty-table.xml" relativeToChangelogFile="true"/>-->
 <!--    <include file="01-Developer-table.xml" relativeToChangelogFile="true"/>-->

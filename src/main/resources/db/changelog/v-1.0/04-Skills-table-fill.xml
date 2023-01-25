@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+    <changeSet author="DmitryElkin" id="skills_04">
+        <insert tableName="skills_tbl">
+            <column name="name" value="linear algebra"/>
+            <column name="statusId" value="1"/>
+        </insert>
+        <insert tableName="skills_tbl">
+            <column name="name" value="discrete maths"/>
+            <column name="statusId" value="1"/>
+        </insert>
+        <insert tableName="skills_tbl">
+            <column name="name" value="software engineering"/>
+            <column name="statusId" value="1"/>
+        </insert>
+        <insert tableName="skills_tbl">
+            <column name="name" value="english"/>
+            <column name="statusId" value="1"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>
