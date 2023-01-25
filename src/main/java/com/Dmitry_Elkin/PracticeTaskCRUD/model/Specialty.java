@@ -41,7 +41,7 @@ public class Specialty implements BaseModelsMethsI {
     public Specialty(long id, String name, int statusId) {
         this.id = id;
         this.name = name;
-        status = Status.getStatus(statusId);
+        status = Status.getStatusByValue(statusId);
     }
 
 

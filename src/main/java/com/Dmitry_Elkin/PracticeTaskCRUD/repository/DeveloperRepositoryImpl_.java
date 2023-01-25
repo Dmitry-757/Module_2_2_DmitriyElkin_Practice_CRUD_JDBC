@@ -1,26 +1,23 @@
 package com.Dmitry_Elkin.PracticeTaskCRUD.repository;
 
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Developer;
-import com.Dmitry_Elkin.PracticeTaskCRUD.model.Skill;
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Status;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DeveloperRepositoryImpl implements DeveloperRepository {
+public class DeveloperRepositoryImpl_ implements DeveloperRepository {
+
+
     private static final String INSERT_SQL =
             """
                     INSERT developer_db.developer_tbl(id, firstName, lastName, skillsId, specialtyId, statusId) 
                     VALUES (?, ?, ?, ?, ?, ?)""";
-    private static final String SELECT_BY_ID = "select id, firstName, lastName, skillsId, specialtyId, statusId " +
-            "from developer_tbl where id = ?";
-    private static final String SELECT_ALL = " select * from developers_tbl ";
-
+    private static final String SELECT_BY_ID = "select id, firstName, lastName, skillsId, specialtyId, statusId from developer_tbl where id = ?";
+    private static final String SELECT_ALL = "select * from developers_tbl";
     private static final String DELETE_SQL = "delete from developer_tbl where id = ?;";
     private static final String UPDATE_SQL = "update developer_tbl set firstName = ?, lastName = ?, " +
             "skillsId = ?, specialtyId = ?, statusId = ? where id = ?;";
@@ -28,35 +25,23 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
 
     @Override
     public List<Developer> getAll(Status status) {
-        String selectStatement;
-        if (status == null){
-            selectStatement = SELECT_ALL;
-        } else {
-            selectStatement = SELECT_ALL+ " where statusId = " + StatusRepository.getStatusId(status);
-        }
-
         List<Developer> itemList = new LinkedList<>();
-        SpecialtyRepositoryImpl specialtyRepository = new SpecialtyRepositoryImpl();
-        SkillRepositoryImpl skillRepository = new SkillRepositoryImpl();
-
         try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL)) {
             ResultSet rs = preparedStatement.executeQuery();
-            HashSet<Skill> skills;
+
             while (rs.next()) {
                 long id = rs.getLong("id");
                 String firstName = rs.getString("firstName");
-                String secondName = rs.getString("secondName");
-                long specialtyId = rs.getLong("specialtyId");
-                long statusId = rs.getLong("statusId");
+                String lastName = rs.getString("author");
+                int skillsId = rs.getInt("skillsId");
+                int specialtyId = rs.getInt("specialtyId");
+                int statusId = rs.getInt("statusId");
 
-                skills = skillRepository.getSkillsFromLinkTable(id);
-
-                itemList.add(new Developer(id, firstName, secondName, skills,
-                        specialtyRepository.getById(specialtyId), StatusRepository.getById(statusId) ));
+//                itemList.add(new Developer(id, firstName, lastName, skills, specialty));
             }
         } catch (SQLException e) {
-            StatusRepository.printSQLException(e);
+            printSQLException(e);
         }
         return itemList;
     }
@@ -68,6 +53,11 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
 
     @Override
     public Developer getById(Long id) {
+        try  {
+        } catch (Exception e) {
+//            throw new RuntimeException(e);
+            System.out.println("some io exception in module GsonDeveloperRepositoryImpl in meth getById: "+e.getMessage());
+        }
         return null;
     }
 
@@ -85,10 +75,19 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
 
 
     public void add(Developer item){
+        try {
+        } catch (Exception e) {
+            //throw new RuntimeException(e);
+            System.out.println("some io exception in module GsonDeveloperRepositoryImpl in meth add: "+e.getMessage());
+        }
     }
 
     public void update(Developer item){
-
+        try
+        {
+        } catch (Exception e) {
+            System.out.println("FileNotFoundException in module GsonDeveloperRepositoryImpl in meth update: " + e.getMessage());
+        }
     }
 
     @Override
@@ -100,6 +99,23 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
     public void unDelete(Developer item) {
         item.setUnDeleted();
         update(item);
+    }
+
+
+    private static void printSQLException(SQLException ex) {
+        for (Throwable e : ex) {
+            if (e instanceof SQLException) {
+                e.printStackTrace(System.err);
+                System.err.println("SQLState: " + ((SQLException) e).getSQLState());
+                System.err.println("Error Code: " + ((SQLException) e).getErrorCode());
+                System.err.println("Message: " + e.getMessage());
+                Throwable t = ex.getCause();
+                while (t != null) {
+                    System.out.println("Cause: " + t);
+                    t = t.getCause();
+                }
+            }
+        }
     }
 
 }

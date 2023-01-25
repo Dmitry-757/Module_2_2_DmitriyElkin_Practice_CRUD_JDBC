@@ -1,8 +1,6 @@
 package com.Dmitry_Elkin.PracticeTaskCRUD.repository;
 
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Skill;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -18,7 +16,7 @@ class GsonSkillRepositoryImplTest {
     Path file = Paths.get("skill.json");
     Skill skill1 = new Skill("Linear algebra");
     Skill skill2 = new Skill("java EE");
-    GsonSkillRepositoryImpl gsonSkillRepository = new GsonSkillRepositoryImpl();
+    SkillRepositoryImpl gsonSkillRepository = new SkillRepositoryImpl();
 
 
 

@@ -23,20 +23,26 @@ public class Skill implements BaseModelsMethsI{
         }
     }
     private long id;
-    private String Name;
+    private String name;
     private Status status;
 
     public Skill(long id, String name) {
         this.id = id;
-        Name = name;
+        this.name = name;
         status = Status.ACTIVE;
     }
 
     public Skill(String name) {
-        Name = name;
+        this.name = name;
         status = Status.ACTIVE;
 
     }
+    public Skill(long id, String name, int statusId) {
+        this.id = id;
+        this.name = name;
+        status = Status.getStatusByValue(statusId);
+    }
+
 
     public static long getLastId() {
         return Skill.lastId;
@@ -69,11 +75,11 @@ public class Skill implements BaseModelsMethsI{
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     @Override
@@ -81,12 +87,12 @@ public class Skill implements BaseModelsMethsI{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Skill skill = (Skill) o;
-        return id == skill.id && Name.equals(skill.Name) && status == skill.status;
+        return id == skill.id && name.equals(skill.name) && status == skill.status;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, Name, status);
+        return Objects.hash(id, name, status);
     }
 
 
@@ -94,7 +100,7 @@ public class Skill implements BaseModelsMethsI{
     public String toString() {
         return "Skill{" +
                 "id=" + id +
-                ", Name='" + Name + '\'' +
+                ", Name='" + name + '\'' +
                 ", status=" + status +
                 '}';
     }

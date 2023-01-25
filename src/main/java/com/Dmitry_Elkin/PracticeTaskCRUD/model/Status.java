@@ -14,10 +14,11 @@ public enum Status {
         return status;
     }
 
-    public static Status getStatus(int i){
+    public static Status getStatusByValue(int i){
         return switch (i){
-            case 1-> Status.ACTIVE;
-            default -> Status.DELETED;
+            case 1 -> Status.ACTIVE;
+            case 0 -> Status.DELETED;
+            default -> null;
         };
     }
 

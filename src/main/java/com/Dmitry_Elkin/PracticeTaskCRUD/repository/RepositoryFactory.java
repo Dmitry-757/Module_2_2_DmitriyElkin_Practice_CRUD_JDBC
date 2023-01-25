@@ -2,17 +2,17 @@ package com.Dmitry_Elkin.PracticeTaskCRUD.repository;
 
 
 public class RepositoryFactory {
-    private static final GsonSkillRepositoryImpl skillRepository;
+    private static final SkillRepositoryImpl skillRepository;
     private static final SpecialtyRepositoryImpl specialtyRepository;
-    private static final GsonDeveloperRepositoryImpl developerRepository;
+    private static final DeveloperRepositoryImpl developerRepository;
 
     static {
-        skillRepository = new GsonSkillRepositoryImpl();
+        skillRepository = new SkillRepositoryImpl();
         specialtyRepository = new SpecialtyRepositoryImpl();
-        developerRepository = new GsonDeveloperRepositoryImpl();
+        developerRepository = new DeveloperRepositoryImpl();
     }
 
-    public static GsonSkillRepositoryImpl getSkillRepository() {
+    public static SkillRepositoryImpl getSkillRepository() {
         return skillRepository;
     }
 
@@ -20,7 +20,7 @@ public class RepositoryFactory {
         return specialtyRepository;
     }
 
-    public static GsonDeveloperRepositoryImpl getDeveloperRepository() {
+    public static DeveloperRepositoryImpl getDeveloperRepository() {
         return developerRepository;
     }
 }

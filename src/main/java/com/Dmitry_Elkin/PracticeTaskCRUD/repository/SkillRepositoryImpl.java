@@ -4,24 +4,26 @@ import com.Dmitry_Elkin.PracticeTaskCRUD.model.Skill;
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Specialty;
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Status;
 
+
 import java.sql.*;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SpecialtyRepositoryImpl implements SpecialtyRepository {
-
+public class SkillRepositoryImpl implements SkillRepository {
     private static final String INSERT_SQL =
             """
-                    INSERT specialty_tbl(name, statusId)
+                    INSERT skills_tbl(name, statusId)
                     VALUES (?, ?)""";
 //    private static final String SELECT_ALL = """
-//            select sp.id, sp.name, st.status_value from specialty_tbl as sp
+//            select sp.id, sp.name, st.status_value from skills_tbl as sp
 //            left join status_tbl as st\s
 //            on sp.statusId = st.id""";
-private static final String SELECT_ALL = "select * from specialty_tbl";
 
-    //    private static final String DELETE_SQL = "delete from specialty_tbl where id = ?;";
-    private static final String UPDATE_SQL = "update specialty_tbl set name = ?, statusId = ? where id = ?;";
+    private static final String SELECT_ALL = "select * from skills_tbl";
+
+    //    private static final String DELETE_SQL = "delete from skills_tbl where id = ?;";
+    private static final String UPDATE_SQL = "update skills_tbl set name = ?, statusId = ? where id = ?;";
 
     public long getStatusId(Status item){
         long statusId = 0;
@@ -40,7 +42,7 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
 
 
     @Override
-    public List<Specialty> getAll(Status status) {
+    public List<Skill> getAll(Status status) {
         String selectStatement;
         if (status == null){
             selectStatement = SELECT_ALL;
@@ -48,7 +50,7 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
             selectStatement = SELECT_ALL + " where statusId = " + getStatusId(status);
         }
 
-        List<Specialty> itemList = new LinkedList<>();
+        List<Skill> itemList = new LinkedList<>();
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
             ResultSet rs = preparedStatement.executeQuery();
@@ -57,25 +59,27 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
                 long id = rs.getLong("id");
                 String name = rs.getString("name");
                 int status_value = rs.getInt("status_value");
-                itemList.add(new Specialty(id, name, status_value));
+                itemList.add(new Skill(id, name, status_value));
             }
         } catch (SQLException e) {
             printSQLException(e);
         }
-
         return itemList;
     }
 
+
     //чтоб не переписывать код, где вызывается метод без параметров
     @Override
-    public List<Specialty> getAll() {
+    public List<Skill> getAll() {
         return getAll(null);
     }
 
+
+
     @Override
-    public Specialty getById(Long itemId) {
-        String selectStatement = SELECT_ALL + " id = " + itemId;
-        List<Specialty> itemList = new LinkedList<>();
+    public Skill getById(Long itemId) {
+        String selectStatement = SELECT_ALL + " where id = " + itemId;
+        List<Skill> itemList = new LinkedList<>();
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
             ResultSet rs = preparedStatement.executeQuery();
@@ -84,7 +88,7 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
                 long id = rs.getLong("id");
                 String name = rs.getString("name");
                 int status_value = rs.getInt("status_value");
-                itemList.add(new Specialty(id, name, status_value));
+                itemList.add(new Skill(id, name, status_value));
             }
             if (itemList.size()>0){
                 return itemList.get(0);
@@ -95,20 +99,40 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
         return null;
     }
 
+    public HashSet<Skill> getSkillsFromLinkTable(long developerId){
+        HashSet<Skill> itemSet = new HashSet<>();
+        String selectStatement = " select * from developer2skills_tbl where developerId = " + developerId;
+
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                long id = rs.getLong("id");
+                long skillId = rs.getLong("skillId");
+
+                itemSet.add(getById(skillId));
+            }
+        } catch (SQLException e) {
+            printSQLException(e);
+        }
+        return itemSet;
+    }
+
     @Override
-    public void addOrUpdate(Specialty item) {
+    public void addOrUpdate(Skill item) {
         //*** add ***
         if (item.getId() <= 0) {
             item.setNewId();
             insert(item);
+        } else {
+            //*** update ***
+            update(item);
         }
-
-        //*** update ***
-        update(item);
     }
 
 
-    public void insert(Specialty item){
+    public void insert(Skill item) {
         long statusId = getStatusId(item.getStatus());
 
         try (Connection connection = DBConnection.getConnection();
@@ -128,7 +152,7 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
         }
     }
 
-    public void update(Specialty item){
+    public void update(Skill item) {
         long statusId = getStatusId(item.getStatus());
 
         try (Connection connection = DBConnection.getConnection();
@@ -142,20 +166,19 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
         } catch (SQLException e) {
             printSQLException(e);
         }
-
     }
 
     @Override
-    public void delete(Specialty item) {
+    public void delete(Skill item) {
         item.setDeleted();
         update(item);
     }
 
-    @Override
-    public void unDelete(Specialty item) {
+    public void unDelete(Skill item) {
         item.setUnDeleted();
         update(item);
     }
+
 
     private static void printSQLException(SQLException ex) {
         for (Throwable e : ex) {
@@ -172,6 +195,5 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
             }
         }
     }
-
 
 }

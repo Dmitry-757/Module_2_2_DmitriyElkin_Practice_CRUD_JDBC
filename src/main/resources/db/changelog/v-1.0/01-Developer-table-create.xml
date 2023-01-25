@@ -16,9 +16,9 @@
             <column name="lastName" type="varchar(50)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="skillsId" type="bigint">
-                <constraints nullable="false"/>
-            </column>
+<!--            <column name="skillsId" type="bigint">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
             <column name="specialtyId" type="bigint">
                 <constraints nullable="false"/>
             </column>
