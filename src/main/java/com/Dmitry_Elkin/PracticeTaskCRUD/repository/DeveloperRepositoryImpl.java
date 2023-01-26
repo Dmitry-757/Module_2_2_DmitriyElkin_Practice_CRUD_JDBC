@@ -2,6 +2,7 @@ package com.Dmitry_Elkin.PracticeTaskCRUD.repository;
 
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Developer;
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Skill;
+import com.Dmitry_Elkin.PracticeTaskCRUD.model.Specialty;
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Status;
 
 import java.sql.*;
@@ -70,22 +71,24 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
         SpecialtyRepositoryImpl specialtyRepository = new SpecialtyRepositoryImpl();
         SkillRepositoryImpl skillRepository = new SkillRepositoryImpl();
 
+        HashSet<Skill> skills;
+        skills = skillRepository.getSkillsFromLinkTable(itemId);
+
         List<Developer> itemList = new LinkedList<>();
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
             ResultSet rs = preparedStatement.executeQuery();
-            HashSet<Skill> skills;
             while (rs.next()) {
                 long id = rs.getLong("id");
                 String firstName = rs.getString("firstName");
                 String secondName = rs.getString("lastName");
                 long specialtyId = rs.getLong("specialtyId");
                 int statusId = rs.getInt("statusId");
-
-                skills = skillRepository.getSkillsFromLinkTable(id);
+                Status status = Status.getStatusById(statusId);
+                Specialty specialty = specialtyRepository.getById(specialtyId);
 
                 itemList.add(new Developer(id, firstName, secondName, skills,
-                        specialtyRepository.getById(specialtyId), Status.getStatusById(statusId) ));
+                        specialty, status ));
             }
         } catch (SQLException e) {
             StatusRepository.printSQLException(e);
