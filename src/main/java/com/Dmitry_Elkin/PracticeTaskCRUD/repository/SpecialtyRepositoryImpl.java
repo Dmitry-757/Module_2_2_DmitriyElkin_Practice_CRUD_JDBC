@@ -23,21 +23,6 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
     //    private static final String DELETE_SQL = "delete from specialty_tbl where id = ?;";
     private static final String UPDATE_SQL = "update specialty_tbl set name = ?, statusId = ? where id = ?;";
 
-    public long getStatusId(Status item){
-        long statusId = 0;
-        String selectStatement = "select * from status_tbl where status_value = "+item.getStatusValue();
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
-            ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                statusId = rs.getLong("id");
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        }
-        return statusId;
-    }
-
 
     @Override
     public List<Specialty> getAll(Status status) {
@@ -45,7 +30,7 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
         if (status == null){
             selectStatement = SELECT_ALL;
         } else {
-            selectStatement = SELECT_ALL + " where statusId = " + getStatusId(status);
+            selectStatement = SELECT_ALL + " where statusId = " + status.getId();
         }
 
         List<Specialty> itemList = new LinkedList<>();
@@ -109,13 +94,12 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
 
 
     public void insert(Specialty item){
-        long statusId = getStatusId(item.getStatus());
 
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL,
                      Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, item.getName());
-            preparedStatement.setLong(2, statusId);
+            preparedStatement.setInt(2, item.getStatus().getId());
 
             preparedStatement.executeUpdate();
             ResultSet rs = preparedStatement.getGeneratedKeys();
@@ -129,13 +113,10 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
     }
 
     public void update(Specialty item){
-        long statusId = getStatusId(item.getStatus());
-
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(UPDATE_SQL)) {
             statement.setString(1, item.getName());
-            statement.setLong(2, statusId);
-            statement.setLong(3, item.getId());
+            statement.setInt(2, item.getStatus().getId());
             statement.executeUpdate();
 
 //            rowUpdated = statement.executeUpdate() > 0;

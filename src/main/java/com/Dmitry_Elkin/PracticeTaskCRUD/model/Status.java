@@ -4,17 +4,17 @@ public enum Status {
     ACTIVE(1),
     DELETED(0);
 
-    private int status;
+    private int id;
 
-    Status(int i) {
-        status = i;
+    Status(int id) {
+        this.id = id;
     }
 
-    public int getStatusValue() {
-        return status;
+    public int getId() {
+        return id;
     }
 
-    public static Status getStatusByValue(int i){
+    public static Status getStatusById(int i){
         return switch (i){
             case 1 -> Status.ACTIVE;
             case 0 -> Status.DELETED;

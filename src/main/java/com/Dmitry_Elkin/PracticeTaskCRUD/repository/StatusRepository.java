@@ -1,10 +1,5 @@
 package com.Dmitry_Elkin.PracticeTaskCRUD.repository;
 
-import com.Dmitry_Elkin.PracticeTaskCRUD.model.Status;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class StatusRepository {
@@ -26,34 +21,34 @@ public class StatusRepository {
     }
 
 
-    public static long getStatusId(Status item){
-        long statusId = 0;
-        String selectStatement = "select * from status_tbl where status_value = "+item.getStatusValue();
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
-            ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                statusId = rs.getLong("id");
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        }
-        return statusId;
-    }
+//    public static long getStatusId(Status item){
+//        long statusId = 0;
+//        String selectStatement = "select * from status_tbl where status_value = "+item.getStatusValue();
+//        try (Connection connection = DBConnection.getConnection();
+//             PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
+//            ResultSet rs = preparedStatement.executeQuery();
+//            if (rs.next()) {
+//                statusId = rs.getLong("id");
+//            }
+//        } catch (SQLException e) {
+//            printSQLException(e);
+//        }
+//        return statusId;
+//    }
 
-    public static Status getById(long id){
-        int statusValue = -1;
-        String selectStatement = "select * from status_tbl where id = "+id;
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
-            ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                statusValue = rs.getInt("statusValue");
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        }
-
-        return Status.getStatusByValue(statusValue);
-    }
+//    public static Status getById(long id){
+//        int statusValue = -1;
+//        String selectStatement = "select * from status_tbl where id = "+id;
+//        try (Connection connection = DBConnection.getConnection();
+//             PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
+//            ResultSet rs = preparedStatement.executeQuery();
+//            if (rs.next()) {
+//                statusValue = rs.getInt("statusValue");
+//            }
+//        } catch (SQLException e) {
+//            printSQLException(e);
+//        }
+//
+//        return Status.getStatusById(statusValue);
+//    }
 }

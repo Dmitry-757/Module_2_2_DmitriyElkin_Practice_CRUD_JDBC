@@ -7,15 +7,18 @@
 
     <changeSet author="DmitryElkin" id="status_01">
         <createTable tableName="status_tbl">
-            <column name="id" autoIncrement="true" type="bigint">
+<!--            <column name="id" autoIncrement="true" type="bigint">-->
+<!--                <constraints primaryKey="true" unique="true"/>-->
+<!--            </column>-->
+            <column name="id" type="int">
                 <constraints primaryKey="true" unique="true"/>
             </column>
             <column name="name" type="varchar(50)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="status_value" type="int">
-                <constraints nullable="false"/>
-            </column>
+<!--            <column name="status_value" type="int">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
         </createTable>
     </changeSet>
 

@@ -13,7 +13,7 @@
             <column name="name" type="varchar(50)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="statusId" type="bigint">
+            <column name="statusId" type="int">
                 <constraints nullable="false"/>
             </column>
         </createTable>

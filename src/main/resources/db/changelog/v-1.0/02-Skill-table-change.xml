@@ -10,7 +10,7 @@
         <renameColumn tableName="skills_tbl"
                       oldColumnName="status"
                       newColumnName="statusId"
-                      columnDataType="bigint"
+                      columnDataType="int"
         />
     </changeSet>
 

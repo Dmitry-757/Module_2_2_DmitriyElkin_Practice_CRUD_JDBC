@@ -7,12 +7,14 @@
 
     <changeSet author="DmitryElkin" id="status_04">
         <insert tableName="status_tbl">
+            <column name="id" value="1"/>
             <column name="name" value="ACTIVE"/>
-            <column name="status_value" value="1"/>
+<!--            <column name="status_value" value="1"/>-->
         </insert>
         <insert tableName="status_tbl">
+            <column name="id" value="0"/>
             <column name="name" value="DELETED"/>
-            <column name="status_value" value="0"/>
+<!--            <column name="status_value" value="0"/>-->
         </insert>
     </changeSet>
 

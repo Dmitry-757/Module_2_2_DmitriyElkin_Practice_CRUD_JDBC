@@ -25,21 +25,6 @@ public class SkillRepositoryImpl implements SkillRepository {
     //    private static final String DELETE_SQL = "delete from skills_tbl where id = ?;";
     private static final String UPDATE_SQL = "update skills_tbl set name = ?, statusId = ? where id = ?;";
 
-    public long getStatusId(Status item){
-        long statusId = 0;
-        String selectStatement = "select * from status_tbl where status_value = "+item.getStatusValue();
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
-            ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                statusId = rs.getLong("id");
-            }
-        } catch (SQLException e) {
-            printSQLException(e);
-        }
-        return statusId;
-    }
-
 
     @Override
     public List<Skill> getAll(Status status) {
@@ -47,7 +32,7 @@ public class SkillRepositoryImpl implements SkillRepository {
         if (status == null){
             selectStatement = SELECT_ALL;
         } else {
-            selectStatement = SELECT_ALL + " where statusId = " + getStatusId(status);
+            selectStatement = SELECT_ALL + " where statusId = " + status.getId();
         }
 
         List<Skill> itemList = new LinkedList<>();
@@ -62,7 +47,7 @@ public class SkillRepositoryImpl implements SkillRepository {
                 itemList.add(new Skill(id, name, status_value));
             }
         } catch (SQLException e) {
-            printSQLException(e);
+            StatusRepository.printSQLException(e);
         }
         return itemList;
     }
@@ -94,7 +79,7 @@ public class SkillRepositoryImpl implements SkillRepository {
                 return itemList.get(0);
             }
         } catch (SQLException e) {
-            printSQLException(e);
+            StatusRepository.printSQLException(e);
         }
         return null;
     }
@@ -114,7 +99,7 @@ public class SkillRepositoryImpl implements SkillRepository {
                 itemSet.add(getById(skillId));
             }
         } catch (SQLException e) {
-            printSQLException(e);
+            StatusRepository.printSQLException(e);
         }
         return itemSet;
     }
@@ -133,13 +118,12 @@ public class SkillRepositoryImpl implements SkillRepository {
 
 
     public void insert(Skill item) {
-        long statusId = getStatusId(item.getStatus());
 
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL,
                      Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, item.getName());
-            preparedStatement.setLong(2, statusId);
+            preparedStatement.setInt(2, item.getStatus().getId());
 
             preparedStatement.executeUpdate();
             ResultSet rs = preparedStatement.getGeneratedKeys();
@@ -148,23 +132,22 @@ public class SkillRepositoryImpl implements SkillRepository {
 //                rowInserted = true;
             }
         } catch (SQLException e) {
-            printSQLException(e);
+            StatusRepository.printSQLException(e);
         }
     }
 
     public void update(Skill item) {
-        long statusId = getStatusId(item.getStatus());
 
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(UPDATE_SQL)) {
             statement.setString(1, item.getName());
-            statement.setLong(2, statusId);
+            statement.setInt(2, item.getStatus().getId());
             statement.setLong(3, item.getId());
             statement.executeUpdate();
 
 //            rowUpdated = statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            printSQLException(e);
+            StatusRepository.printSQLException(e);
         }
     }
 
@@ -180,20 +163,5 @@ public class SkillRepositoryImpl implements SkillRepository {
     }
 
 
-    private static void printSQLException(SQLException ex) {
-        for (Throwable e : ex) {
-            if (e instanceof SQLException) {
-                e.printStackTrace(System.err);
-                System.err.println("SQLState: " + ((SQLException) e).getSQLState());
-                System.err.println("Error Code: " + ((SQLException) e).getErrorCode());
-                System.err.println("Message: " + e.getMessage());
-                Throwable t = ex.getCause();
-                while (t != null) {
-                    System.out.println("Cause: " + t);
-                    t = t.getCause();
-                }
-            }
-        }
-    }
 
 }

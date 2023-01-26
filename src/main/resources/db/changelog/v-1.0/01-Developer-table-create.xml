@@ -22,7 +22,7 @@
             <column name="specialtyId" type="bigint">
                 <constraints nullable="false"/>
             </column>
-            <column name="statusId" type="bigint">
+            <column name="statusId" type="int">
                 <constraints nullable="false"/>
             </column>
         </createTable>
