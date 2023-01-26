@@ -12,8 +12,8 @@ import java.util.List;
 public class DeveloperRepositoryImpl implements DeveloperRepository {
     private static final String INSERT_SQL =
             """
-                    INSERT developers_tbl(id, firstName, lastName, specialtyId, statusId) 
-                    VALUES (?, ?, ?, ?, ?, ?)""";
+                    INSERT developers_tbl(firstName, lastName, specialtyId, statusId) 
+                    VALUES (?, ?, ?, ?)""";
     private static final String SELECT_BY_ID = "select id, firstName, lastName, skillsId, specialtyId, statusId " +
             "from developer_tbl where id = ?";
     private static final String SELECT_ALL = " select * from developers_tbl ";
@@ -64,8 +64,38 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
     }
 
     @Override
-    public Developer getById(Long id) {
-        return null;
+    public Developer getById(Long itemId) {
+        String selectStatement = SELECT_ALL+ " where id = " + itemId;
+
+        SpecialtyRepositoryImpl specialtyRepository = new SpecialtyRepositoryImpl();
+        SkillRepositoryImpl skillRepository = new SkillRepositoryImpl();
+
+        List<Developer> itemList = new LinkedList<>();
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
+            ResultSet rs = preparedStatement.executeQuery();
+            HashSet<Skill> skills;
+            while (rs.next()) {
+                long id = rs.getLong("id");
+                String firstName = rs.getString("firstName");
+                String secondName = rs.getString("lastName");
+                long specialtyId = rs.getLong("specialtyId");
+                int statusId = rs.getInt("statusId");
+
+                skills = skillRepository.getSkillsFromLinkTable(id);
+
+                itemList.add(new Developer(id, firstName, secondName, skills,
+                        specialtyRepository.getById(specialtyId), Status.getStatusById(statusId) ));
+            }
+        } catch (SQLException e) {
+            StatusRepository.printSQLException(e);
+        }
+        if (itemList.size()>0){
+            return itemList.get(0);
+        } else {
+            return null;
+        }
+
     }
 
     @Override
@@ -100,7 +130,7 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
 //                rowInserted = true;
             }
             //let`s write skills to bd
-            try( PreparedStatement ps = connection.prepareStatement("INSERT developer2skills_tbl VALUES (?, ?)",
+            try( PreparedStatement ps = connection.prepareStatement("INSERT developer2skills_tbl(developerId, skillId) VALUES (?, ?)",
                         Statement.RETURN_GENERATED_KEYS)) {
                 for (Skill skill : item.getSkills()) {
                     ps.setLong(1, item.getId());
@@ -108,7 +138,7 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
                     ps.addBatch();
                 }
                 int[] rows = ps.executeBatch();
-                System.out.println("to vinyla_db.developer2skills_tbl where added " + (rows.length) +" record(s)");
+                System.out.println("to developer2skills_tbl where added " + (rows.length) +" record(s)");
             } catch (SQLException e) {
                 StatusRepository.printSQLException(e);
             }
@@ -118,7 +148,6 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
         } catch (SQLException e) {
             StatusRepository.printSQLException(e);
         }
-
     }
 
     public void update(Developer item){

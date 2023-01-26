@@ -43,8 +43,8 @@ public class SkillRepositoryImpl implements SkillRepository {
             while (rs.next()) {
                 long id = rs.getLong("id");
                 String name = rs.getString("name");
-                int status_value = rs.getInt("status_value");
-                itemList.add(new Skill(id, name, status_value));
+                int statusId = rs.getInt("statusId");
+                itemList.add(new Skill(id, name, statusId));
             }
         } catch (SQLException e) {
             StatusRepository.printSQLException(e);
@@ -72,8 +72,8 @@ public class SkillRepositoryImpl implements SkillRepository {
             while (rs.next()) {
                 long id = rs.getLong("id");
                 String name = rs.getString("name");
-                int status_value = rs.getInt("status_value");
-                itemList.add(new Skill(id, name, status_value));
+                int statusId = rs.getInt("statusId");
+                itemList.add(new Skill(id, name, statusId));
             }
             if (itemList.size()>0){
                 return itemList.get(0);
@@ -90,14 +90,20 @@ public class SkillRepositoryImpl implements SkillRepository {
 
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
+
+            LinkedList<Long> ids = new LinkedList<>();
+
             ResultSet rs = preparedStatement.executeQuery();
-
             while (rs.next()) {
-                long id = rs.getLong("id");
+//                long id = rs.getLong("id");
                 long skillId = rs.getLong("skillId");
-
-                itemSet.add(getById(skillId));
+                ids.add(skillId);
             }
+
+            for (Long id:ids) {
+                itemSet.add(getById(id));
+            }
+
         } catch (SQLException e) {
             StatusRepository.printSQLException(e);
         }

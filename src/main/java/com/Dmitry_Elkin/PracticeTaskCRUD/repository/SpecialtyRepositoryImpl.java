@@ -41,8 +41,8 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
             while (rs.next()) {
                 long id = rs.getLong("id");
                 String name = rs.getString("name");
-                int status_value = rs.getInt("status_value");
-                itemList.add(new Specialty(id, name, status_value));
+                int statusId = rs.getInt("statusId");
+                itemList.add(new Specialty(id, name, statusId));
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -59,7 +59,7 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
 
     @Override
     public Specialty getById(Long itemId) {
-        String selectStatement = SELECT_ALL + " id = " + itemId;
+        String selectStatement = SELECT_ALL + " where id = " + itemId;
         List<Specialty> itemList = new LinkedList<>();
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
@@ -68,8 +68,8 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
             while (rs.next()) {
                 long id = rs.getLong("id");
                 String name = rs.getString("name");
-                int status_value = rs.getInt("status_value");
-                itemList.add(new Specialty(id, name, status_value));
+                int statusId = rs.getInt("statusId");
+                itemList.add(new Specialty(id, name, statusId));
             }
             if (itemList.size()>0){
                 return itemList.get(0);
