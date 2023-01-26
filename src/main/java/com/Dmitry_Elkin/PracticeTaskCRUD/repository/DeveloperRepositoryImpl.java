@@ -76,8 +76,8 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
 
         List<Developer> itemList = new LinkedList<>();
         try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
-            ResultSet rs = preparedStatement.executeQuery();
+             PreparedStatement ps = connection.prepareStatement(selectStatement)) {
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 long id = rs.getLong("id");
                 String firstName = rs.getString("firstName");
@@ -85,7 +85,22 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
                 long specialtyId = rs.getLong("specialtyId");
                 int statusId = rs.getInt("statusId");
                 Status status = Status.getStatusById(statusId);
-                Specialty specialty = specialtyRepository.getById(specialtyId);
+//                Specialty specialty = specialtyRepository.getById(specialtyId);
+                Specialty specialty = null;
+                
+                try (
+                     PreparedStatement preparedStatement2 = connection.prepareStatement("select * from specialty_tbl where id = "+specialtyId)) {
+                    ResultSet rs2 = preparedStatement2.executeQuery();
+
+                    while (rs2.next()) {
+                        long id2 = rs2.getLong("id");
+                        String name2 = rs2.getString("name");
+                        int statusId2 = rs2.getInt("statusId");
+                        specialty = new Specialty(id2, name2, statusId2);
+                    }
+                } catch (SQLException e) {
+                    StatusRepository.printSQLException(e);
+                }
 
                 itemList.add(new Developer(id, firstName, secondName, skills,
                         specialty, status ));

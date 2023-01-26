@@ -10,6 +10,9 @@ import java.util.HashSet;
 
 
 class DeveloperRepositoryImplTest {
+    SpecialtyRepositoryImpl specialtyRepository = new SpecialtyRepositoryImpl();
+    SkillRepositoryImpl skillRepository = new SkillRepositoryImpl();
+    DeveloperRepositoryImpl developerRepository = new DeveloperRepositoryImpl();
 
     @Test
     void getAll() {
@@ -17,13 +20,12 @@ class DeveloperRepositoryImplTest {
 
     @Test
     void getById() {
+        Developer developerReal = developerRepository.getById(2L);
+        System.out.println(developerReal);
     }
 
     @Test
     void insert() {
-        SpecialtyRepositoryImpl specialtyRepository = new SpecialtyRepositoryImpl();
-        SkillRepositoryImpl skillRepository = new SkillRepositoryImpl();
-        DeveloperRepositoryImpl developerRepository = new DeveloperRepositoryImpl();
 
         Specialty specialty = specialtyRepository.getById(1L);
         HashSet<Skill> skills = new HashSet<>();
