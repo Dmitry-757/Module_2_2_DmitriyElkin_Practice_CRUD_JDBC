@@ -86,6 +86,8 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL,
                      Statement.RETURN_GENERATED_KEYS)) {
+            connection.setAutoCommit(false);
+
             preparedStatement.setString(1, item.getFirstName());
             preparedStatement.setString(2, item.getLastName());
             preparedStatement.setLong(3, item.getSpecialty().getId());
@@ -97,6 +99,22 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
                 item.setId(rs.getInt(1));
 //                rowInserted = true;
             }
+            //let`s write skills to bd
+            try( PreparedStatement ps = connection.prepareStatement("INSERT developer2skills_tbl VALUES (?, ?)",
+                        Statement.RETURN_GENERATED_KEYS)) {
+                for (Skill skill : item.getSkills()) {
+                    ps.setLong(1, item.getId());
+                    ps.setLong(2, skill.getId());
+                    ps.addBatch();
+                }
+                int[] rows = ps.executeBatch();
+                System.out.println("to vinyla_db.developer2skills_tbl where added " + (rows.length) +" record(s)");
+            } catch (SQLException e) {
+                StatusRepository.printSQLException(e);
+            }
+
+            connection.commit();
+
         } catch (SQLException e) {
             StatusRepository.printSQLException(e);
         }

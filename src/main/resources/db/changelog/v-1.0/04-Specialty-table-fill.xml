@@ -12,7 +12,7 @@
         </insert>
         <insert tableName="specialty_tbl">
             <column name="name" value="qa"/>
-            <column name="statusId" value="2"/>
+            <column name="statusId" value="1"/>
         </insert>
 
     </changeSet>
