@@ -16,6 +16,7 @@ class DeveloperRepositoryImplTest {
 
     @Test
     void getAll() {
+        developerRepository.getAll(null).forEach(System.out::println);
     }
 
     @Test

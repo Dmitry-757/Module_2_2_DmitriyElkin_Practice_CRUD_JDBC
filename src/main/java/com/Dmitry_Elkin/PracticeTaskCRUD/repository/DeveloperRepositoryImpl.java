@@ -15,8 +15,8 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
             """
                     INSERT developers_tbl(firstName, lastName, specialtyId, statusId) 
                     VALUES (?, ?, ?, ?)""";
-    private static final String SELECT_BY_ID = "select id, firstName, lastName, skillsId, specialtyId, statusId " +
-            "from developer_tbl where id = ?";
+//    private static final String SELECT_BY_ID = "select id, firstName, lastName, skillsId, specialtyId, statusId " +
+//            "from developer_tbl where id = ?";
     private static final String SELECT_ALL = " select * from developers_tbl ";
 
     private static final String DELETE_SQL = "delete from developer_tbl where id = ?;";
@@ -44,7 +44,7 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
             while (rs.next()) {
                 long id = rs.getLong("id");
                 String firstName = rs.getString("firstName");
-                String secondName = rs.getString("secondName");
+                String secondName = rs.getString("lastName");
                 long specialtyId = rs.getLong("specialtyId");
                 int statusId = rs.getInt("statusId");
 
@@ -71,13 +71,14 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
         SpecialtyRepositoryImpl specialtyRepository = new SpecialtyRepositoryImpl();
         SkillRepositoryImpl skillRepository = new SkillRepositoryImpl();
 
+        List<Developer> itemList = new LinkedList<>();
         HashSet<Skill> skills;
         skills = skillRepository.getSkillsFromLinkTable(itemId);
 
-        List<Developer> itemList = new LinkedList<>();
         Connection connection = DBConnection.getConnection();
         try (PreparedStatement ps = connection.prepareStatement(selectStatement)) {
             ResultSet rs = ps.executeQuery();
+
             while (rs.next()) {
                 long id = rs.getLong("id");
                 String firstName = rs.getString("firstName");
@@ -87,21 +88,6 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
                 Status status = Status.getStatusById(statusId);
 
                 Specialty specialty = specialtyRepository.getById(specialtyId);
-//                Specialty specialty = null;
-//                try (
-//                     PreparedStatement preparedStatement2 = connection.prepareStatement("select * from specialty_tbl where id = "+specialtyId)) {
-//                    ResultSet rs2 = preparedStatement2.executeQuery();
-//
-//                    while (rs2.next()) {
-//                        long id2 = rs2.getLong("id");
-//                        String name2 = rs2.getString("name");
-//                        int statusId2 = rs2.getInt("statusId");
-//                        specialty = new Specialty(id2, name2, statusId2);
-//                    }
-//                } catch (SQLException e) {
-//                    StatusRepository.printSQLException(e);
-//                }
-
                 itemList.add(new Developer(id, firstName, secondName, skills,
                         specialty, status ));
             }
