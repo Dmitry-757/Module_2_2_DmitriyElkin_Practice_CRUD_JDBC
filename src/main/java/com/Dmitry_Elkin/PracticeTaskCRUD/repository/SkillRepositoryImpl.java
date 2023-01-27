@@ -36,8 +36,8 @@ public class SkillRepositoryImpl implements SkillRepository {
         }
 
         List<Skill> itemList = new LinkedList<>();
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
+        Connection connection = DBConnection.getConnection();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -65,8 +65,8 @@ public class SkillRepositoryImpl implements SkillRepository {
     public Skill getById(Long itemId) {
         String selectStatement = SELECT_ALL + " where id = " + itemId;
         List<Skill> itemList = new LinkedList<>();
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
+        Connection connection = DBConnection.getConnection();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -87,9 +87,8 @@ public class SkillRepositoryImpl implements SkillRepository {
     public HashSet<Skill> getSkillsFromLinkTable(long developerId){
         HashSet<Skill> itemSet = new HashSet<>();
         String selectStatement = " select * from developer2skills_tbl where developerId = " + developerId;
-
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
+        Connection connection = DBConnection.getConnection();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
 
             LinkedList<Long> ids = new LinkedList<>();
 
@@ -124,9 +123,8 @@ public class SkillRepositoryImpl implements SkillRepository {
 
 
     public void insert(Skill item) {
-
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL,
+        Connection connection = DBConnection.getConnection();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL,
                      Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, item.getName());
             preparedStatement.setInt(2, item.getStatus().getId());
@@ -143,9 +141,8 @@ public class SkillRepositoryImpl implements SkillRepository {
     }
 
     public void update(Skill item) {
-
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(UPDATE_SQL)) {
+        Connection connection = DBConnection.getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_SQL)) {
             statement.setString(1, item.getName());
             statement.setInt(2, item.getStatus().getId());
             statement.setLong(3, item.getId());

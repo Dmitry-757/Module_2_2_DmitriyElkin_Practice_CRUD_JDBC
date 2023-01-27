@@ -34,8 +34,8 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
         }
 
         List<Specialty> itemList = new LinkedList<>();
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
+        Connection connection = DBConnection.getConnection();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -45,7 +45,7 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
                 itemList.add(new Specialty(id, name, statusId));
             }
         } catch (SQLException e) {
-            printSQLException(e);
+            StatusRepository.printSQLException(e);
         }
 
         return itemList;
@@ -61,8 +61,8 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
     public Specialty getById(Long itemId) {
         String selectStatement = SELECT_ALL + " where id = " + itemId;
         List<Specialty> itemList = new LinkedList<>();
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
+        Connection connection = DBConnection.getConnection();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -75,7 +75,7 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
                 return itemList.get(0);
             }
         } catch (SQLException e) {
-            printSQLException(e);
+            StatusRepository.printSQLException(e);
         }
         return null;
     }
@@ -94,9 +94,8 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
 
 
     public void insert(Specialty item){
-
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL,
+        Connection connection = DBConnection.getConnection();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL,
                      Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, item.getName());
             preparedStatement.setInt(2, item.getStatus().getId());
@@ -108,20 +107,20 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
 //                rowInserted = true;
             }
         } catch (SQLException e) {
-            printSQLException(e);
+            StatusRepository.printSQLException(e);
         }
     }
 
     public void update(Specialty item){
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(UPDATE_SQL)) {
+        Connection connection = DBConnection.getConnection();
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_SQL)) {
             statement.setString(1, item.getName());
             statement.setInt(2, item.getStatus().getId());
             statement.executeUpdate();
 
 //            rowUpdated = statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            printSQLException(e);
+            StatusRepository.printSQLException(e);
         }
 
     }
@@ -138,21 +137,6 @@ private static final String SELECT_ALL = "select * from specialty_tbl";
         update(item);
     }
 
-    private static void printSQLException(SQLException ex) {
-        for (Throwable e : ex) {
-            if (e instanceof SQLException) {
-                e.printStackTrace(System.err);
-                System.err.println("SQLState: " + ((SQLException) e).getSQLState());
-                System.err.println("Error Code: " + ((SQLException) e).getErrorCode());
-                System.err.println("Message: " + e.getMessage());
-                Throwable t = ex.getCause();
-                while (t != null) {
-                    System.out.println("Cause: " + t);
-                    t = t.getCause();
-                }
-            }
-        }
-    }
 
 
 }

@@ -37,8 +37,8 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
         SpecialtyRepositoryImpl specialtyRepository = new SpecialtyRepositoryImpl();
         SkillRepositoryImpl skillRepository = new SkillRepositoryImpl();
 
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
+        Connection connection = DBConnection.getConnection();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
             ResultSet rs = preparedStatement.executeQuery();
             HashSet<Skill> skills;
             while (rs.next()) {
@@ -75,8 +75,8 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
         skills = skillRepository.getSkillsFromLinkTable(itemId);
 
         List<Developer> itemList = new LinkedList<>();
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement ps = connection.prepareStatement(selectStatement)) {
+        Connection connection = DBConnection.getConnection();
+        try (PreparedStatement ps = connection.prepareStatement(selectStatement)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 long id = rs.getLong("id");
@@ -85,22 +85,22 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
                 long specialtyId = rs.getLong("specialtyId");
                 int statusId = rs.getInt("statusId");
                 Status status = Status.getStatusById(statusId);
-//                Specialty specialty = specialtyRepository.getById(specialtyId);
-                Specialty specialty = null;
-                
-                try (
-                     PreparedStatement preparedStatement2 = connection.prepareStatement("select * from specialty_tbl where id = "+specialtyId)) {
-                    ResultSet rs2 = preparedStatement2.executeQuery();
 
-                    while (rs2.next()) {
-                        long id2 = rs2.getLong("id");
-                        String name2 = rs2.getString("name");
-                        int statusId2 = rs2.getInt("statusId");
-                        specialty = new Specialty(id2, name2, statusId2);
-                    }
-                } catch (SQLException e) {
-                    StatusRepository.printSQLException(e);
-                }
+                Specialty specialty = specialtyRepository.getById(specialtyId);
+//                Specialty specialty = null;
+//                try (
+//                     PreparedStatement preparedStatement2 = connection.prepareStatement("select * from specialty_tbl where id = "+specialtyId)) {
+//                    ResultSet rs2 = preparedStatement2.executeQuery();
+//
+//                    while (rs2.next()) {
+//                        long id2 = rs2.getLong("id");
+//                        String name2 = rs2.getString("name");
+//                        int statusId2 = rs2.getInt("statusId");
+//                        specialty = new Specialty(id2, name2, statusId2);
+//                    }
+//                } catch (SQLException e) {
+//                    StatusRepository.printSQLException(e);
+//                }
 
                 itemList.add(new Developer(id, firstName, secondName, skills,
                         specialty, status ));
@@ -130,9 +130,8 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
 
 
     public void insert(Developer item){
-
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL,
+        Connection connection = DBConnection.getConnection();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL,
                      Statement.RETURN_GENERATED_KEYS)) {
             connection.setAutoCommit(false);
 
