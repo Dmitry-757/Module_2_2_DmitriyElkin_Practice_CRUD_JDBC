@@ -1,7 +1,7 @@
 package com.Dmitry_Elkin.PracticeTaskCRUD.repository;
 
+import com.Dmitry_Elkin.PracticeTaskCRUD.model.Developer;
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Skill;
-import com.Dmitry_Elkin.PracticeTaskCRUD.model.Specialty;
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Status;
 
 
@@ -15,14 +15,9 @@ public class SkillRepositoryImpl implements SkillRepository {
             """
                     INSERT skills_tbl(name, statusId)
                     VALUES (?, ?)""";
-//    private static final String SELECT_ALL = """
-//            select sp.id, sp.name, st.status_value from skills_tbl as sp
-//            left join status_tbl as st\s
-//            on sp.statusId = st.id""";
 
     private static final String SELECT_ALL = "select * from skills_tbl";
 
-    //    private static final String DELETE_SQL = "delete from skills_tbl where id = ?;";
     private static final String UPDATE_SQL = "update skills_tbl set name = ?, statusId = ? where id = ?;";
 
 
@@ -107,6 +102,36 @@ public class SkillRepositoryImpl implements SkillRepository {
             StatusRepository.printSQLException(e);
         }
         return itemSet;
+    }
+
+    public void setSkills2Developer(HashSet<Skill> skills, Developer item){
+        Connection connection = DBConnection.getConnection();
+        HashSet<Skill> currentSkills = getSkillsFromLinkTable(item.getId());
+        if (currentSkills.equals(skills)){
+            return;
+        }
+
+        //let`s write skills to bd
+        try( Statement statement = connection.createStatement();
+             PreparedStatement ps = connection.prepareStatement("INSERT developer2skills_tbl(developerId, skillId) VALUES (?, ?)",
+                     Statement.RETURN_GENERATED_KEYS)) {
+            //зачистим текущие записи скилов
+            statement.executeUpdate("delete from developer2skills_tbl where developerId = "+ item.getId());
+            //запишем новые
+            for (Skill skill : skills) {
+                ps.setLong(1, item.getId());
+                if (skill.getId() == 0) {
+                    insert(skill);
+                }
+                ps.setLong(2, skill.getId());
+
+                ps.addBatch();
+            }
+            int[] rows = ps.executeBatch();
+            System.out.println("to developer2skills_tbl where added " + (rows.length) +" record(s)");
+        } catch (SQLException e) {
+            StatusRepository.printSQLException(e);
+        }
     }
 
     @Override

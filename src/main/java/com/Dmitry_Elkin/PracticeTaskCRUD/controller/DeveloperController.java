@@ -44,7 +44,6 @@ public class DeveloperController {
     }
 
     private static void createNewItem() {
-
         String firstName = getStringParamFromConsole("first name");
         String lastName = getStringParamFromConsole("second name");
         HashSet<Skill> skills = new HashSet<>(getGenericListFromConsole("Skill", RepositoryFactory.getSkillRepository()));
@@ -55,38 +54,6 @@ public class DeveloperController {
 
 
     private static void changeItem() {
-//        printItems(Status.ACTIVE);// do not to disturb the dead
-//        System.out.println("Input id of changing item");
-//        if (sc.hasNextLong()) {
-//            long id = sc.nextLong();
-//            sc.nextLine();
-//            System.out.println("your choice = " + id);
-//            Developer item = repository.getById(id);
-//            if (item != null) {
-////                System.out.println("editing item = " + item.toString());
-//                System.out.println("editing item = " + item);
-//
-//                String firstName = getStringParamFromConsole("first name");
-//                String lastName = getStringParamFromConsole("second name");
-//                List<Skill> skills = getGenericListFromConsole("Skills", RepositoryFactory.getSkillRepository());
-//                Specialty specialty = getGenericParamFromConsole("Specialty", RepositoryFactory.getSpecialtyRepository());
-//                item.setFirstName(firstName);
-//                item.setLastName(lastName);
-//                if (skills.size() != 0) {
-//                    item.setSkills(skills);
-//                }
-//                if (specialty != null) {
-//                    item.setSpecialty(specialty);
-//                }
-//
-//                repository.addOrUpdate(item);
-//                System.out.println("After edit item is : "+item);
-//            } else
-//                System.out.println("item by id `" + id + "` is not found");
-//        } else {
-//            System.out.println("wrong input...");
-//        }
-
         Developer item = getGenericParamFromConsole("Developer", repository);
         if (item != null) {
             System.out.println("editing item = " + item);
@@ -128,6 +95,4 @@ public class DeveloperController {
             repository.unDelete(item);
         }
     }
-
-    //*****************************************************
 }

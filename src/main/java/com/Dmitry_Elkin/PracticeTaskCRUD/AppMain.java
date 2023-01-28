@@ -1,6 +1,7 @@
 package com.Dmitry_Elkin.PracticeTaskCRUD;
 
 
+import com.Dmitry_Elkin.PracticeTaskCRUD.controller.MainController;
 import com.Dmitry_Elkin.PracticeTaskCRUD.repository.DBConnection;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
@@ -15,19 +16,14 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import java.sql.Connection;
 
 public class AppMain {
-    public static  boolean terminate;
 
     public static void main(String[] args) {
 
-//        MainController cli = new MainController();
-//        while (!terminate){
-//            cli.upLevelMenu();
-//        }
 
 
         System.out.println("Start...");
         Connection connection = DBConnection.getConnection();
-        Database database = null;
+        Database database;
         try {
             database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
         } catch (DatabaseException e) {
@@ -41,5 +37,15 @@ public class AppMain {
         } catch (LiquibaseException e) {
             throw new RuntimeException(e);
         }
+
+        MainController cli = new MainController();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            System.out.println(e.getMessage());
+        }
+        System.out.println("\nstarting...");
+        cli.upLevelMenu();
+
     }
 }

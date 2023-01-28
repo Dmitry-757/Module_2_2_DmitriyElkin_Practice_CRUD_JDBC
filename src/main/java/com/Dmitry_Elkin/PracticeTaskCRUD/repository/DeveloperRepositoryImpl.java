@@ -19,9 +19,12 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
 //            "from developer_tbl where id = ?";
     private static final String SELECT_ALL = " select * from developers_tbl ";
 
-    private static final String DELETE_SQL = "delete from developer_tbl where id = ?;";
-    private static final String UPDATE_SQL = "update developer_tbl set firstName = ?, lastName = ?, " +
-            "skillsId = ?, specialtyId = ?, statusId = ? where id = ?;";
+//    private static final String DELETE_SQL = "delete from developer_tbl where id = ?;";
+    private static final String UPDATE_SQL = "update developers_tbl set firstName = ?, lastName = ?, " +
+            "specialtyId = ?, statusId = ? where id = ?;";
+
+    private final SpecialtyRepositoryImpl specialtyRepository = new SpecialtyRepositoryImpl();
+    private final SkillRepositoryImpl skillRepository = new SkillRepositoryImpl();
 
 
     @Override
@@ -34,8 +37,6 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
         }
 
         List<Developer> itemList = new LinkedList<>();
-        SpecialtyRepositoryImpl specialtyRepository = new SpecialtyRepositoryImpl();
-        SkillRepositoryImpl skillRepository = new SkillRepositoryImpl();
 
         Connection connection = DBConnection.getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
@@ -67,9 +68,6 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
     @Override
     public Developer getById(Long itemId) {
         String selectStatement = SELECT_ALL+ " where id = " + itemId;
-
-        SpecialtyRepositoryImpl specialtyRepository = new SpecialtyRepositoryImpl();
-        SkillRepositoryImpl skillRepository = new SkillRepositoryImpl();
 
         List<Developer> itemList = new LinkedList<>();
         HashSet<Skill> skills;
@@ -155,7 +153,28 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
 
     public void update(Developer item){
 
+        Connection connection = DBConnection.getConnection();
+        try(PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
+            connection.setAutoCommit(false);
+            preparedStatement.setString(1, item.getFirstName());
+            preparedStatement.setString(2, item.getLastName());
+            preparedStatement.setLong(3, item.getSpecialty().getId());
+
+            preparedStatement.setInt(4, item.getStatus().getId());
+            preparedStatement.setLong(5, item.getId());
+
+            preparedStatement.executeUpdate();
+
+            //let`s write skills to bd
+            skillRepository.setSkills2Developer(item.getSkills(), item);
+
+            connection.commit();
+
+        } catch (SQLException e) {
+            StatusRepository.printSQLException(e);
+        }
     }
+
 
     @Override
     public void delete(Developer item) {

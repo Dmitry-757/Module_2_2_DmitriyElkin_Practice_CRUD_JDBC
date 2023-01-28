@@ -42,4 +42,23 @@ class DeveloperRepositoryImplTest {
                 .isEqualTo(developerExpected);
 
     }
+
+
+    @Test
+    void update() {
+
+        HashSet<Skill> skills = new HashSet<>();
+        skills.add(skillRepository.getById(1L));
+        skills.add(skillRepository.getById(3L));
+
+        Developer developer = developerRepository.getById(1L);
+        System.out.println(developer);
+
+        developer.setSkills(skills);
+        developerRepository.update(developer);
+        Developer developerReal = developerRepository.getById(1L);
+        System.out.println(developerReal);
+
+    }
+
 }
