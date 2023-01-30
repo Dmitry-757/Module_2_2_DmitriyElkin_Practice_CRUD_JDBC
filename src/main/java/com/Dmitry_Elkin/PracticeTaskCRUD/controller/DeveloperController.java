@@ -17,7 +17,7 @@ public class DeveloperController {
     private static final DeveloperRepository repository = RepositoryFactory.getDeveloperRepository();
 
     //************* menu ********************
-    public static void menu() {
+    public void menu() {
         boolean goBack = false;
         while (!goBack) {
             System.out.println("1 - New item, 2 - change item, 3 - Delete item, 4 - UnDelete item, " +
@@ -43,7 +43,7 @@ public class DeveloperController {
         }
     }
 
-    private static void createNewItem() {
+    private void createNewItem() {
         String firstName = getStringParamFromConsole("first name");
         String lastName = getStringParamFromConsole("second name");
         HashSet<Skill> skills = new HashSet<>(getGenericListFromConsole("Skill", RepositoryFactory.getSkillRepository()));
@@ -53,7 +53,7 @@ public class DeveloperController {
 
 
 
-    private static void changeItem() {
+    private void changeItem() {
         Developer item = getGenericParamFromConsole("Developer", repository);
         if (item != null) {
             System.out.println("editing item = " + item);
@@ -74,7 +74,7 @@ public class DeveloperController {
 
     }
 
-    public static void printItems(Status status) {
+    public void printItems(Status status) {
         Service.printItems(status, repository);
     }
 
@@ -88,7 +88,7 @@ public class DeveloperController {
 
     }
 
-    private static void unDeleteItem() {
+    private void unDeleteItem() {
         Developer item = getGenericParamFromConsole("Developer", repository, Status.DELETED);
         if (item != null) {
             System.out.println("UnDeleting item is : " + item);

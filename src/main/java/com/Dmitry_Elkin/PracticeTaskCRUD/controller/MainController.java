@@ -9,8 +9,11 @@ public class MainController {
 
     public void upLevelMenu() {
         boolean exit = false;
-        while (!exit) {
+        SkillController skillController = new SkillController();
+        SpecialtyController specialtyController = new SpecialtyController();
+        DeveloperController developerController = new DeveloperController();
 
+        while (!exit) {
             System.out.println("1 - work with Skills, " +
                     " 2 - work with Specialties, " +
                     " 3 - work with Developers," +
@@ -19,11 +22,11 @@ public class MainController {
                 int choice = sc.nextInt();
                 sc.nextLine();
                 switch (choice) {
-                    case 1 -> SkillController.menu();
+                    case 1 -> skillController.menu();
 
-                    case 2 -> SpecialtyController.menu();
+                    case 2 -> specialtyController.menu();
 
-                    case 3 -> DeveloperController.menu();
+                    case 3 -> developerController.menu();
 
                     case 0 -> exit = true;
                     default -> System.out.println("Wrong input!");

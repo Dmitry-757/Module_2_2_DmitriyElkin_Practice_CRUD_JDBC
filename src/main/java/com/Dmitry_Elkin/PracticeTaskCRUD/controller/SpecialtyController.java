@@ -14,7 +14,7 @@ public class SpecialtyController {
     private static final SpecialtyRepository repository = RepositoryFactory.getSpecialtyRepository();
 
     //************* menu ********************
-    public static void menu() {
+    public void menu() {
         boolean goBack = false;
         while (!goBack) {
             System.out.println("1 - New item, 2 - change item, 3 - Delete item, 4 - UnDelete item, " +
@@ -40,12 +40,12 @@ public class SpecialtyController {
         }
     }
 
-    private static void createNewItem() {
+    private void createNewItem() {
         String name = getStringParamFromConsole("first name");
         repository.addOrUpdate(new Specialty(name));
     }
 
-    private static void changeItem() {
+    private void changeItem() {
 
         Specialty item = getGenericParamFromConsole("Specialty", repository);
         if (item != null) {
@@ -58,12 +58,12 @@ public class SpecialtyController {
 
     }
 
-    private static void printItems(Status status) {
+    private void printItems(Status status) {
         Service.printItems(status, repository);
     }
 
 
-    private static void deleteItem() {
+    private void deleteItem() {
         Specialty item = getGenericParamFromConsole("Specialty", repository, Status.ACTIVE);
         if (item != null) {
 //            System.out.println("deleting item is : " + item.toString());
@@ -72,7 +72,7 @@ public class SpecialtyController {
         }
     }
 
-    private static void unDeleteItem() {
+    private void unDeleteItem() {
         Specialty item = getGenericParamFromConsole("Specialty", repository, Status.DELETED);
         if (item != null) {
 //            System.out.println("UnDeleting item is : " + item.toString());
