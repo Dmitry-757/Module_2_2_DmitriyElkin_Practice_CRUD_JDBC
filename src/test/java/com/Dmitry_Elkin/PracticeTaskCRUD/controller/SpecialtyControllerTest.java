@@ -33,6 +33,7 @@ class SpecialtyControllerTest {
     void printItemsWithPowerMock() throws Exception {
         SpecialtyController sc = new SpecialtyController();
         Whitebox.invokeMethod(sc,"printItems", null);
+//        String actualValue = Whitebox.invokeMethod(sc,"methodName", "arguments");
     }
 
 }
