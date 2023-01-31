@@ -58,10 +58,6 @@ public class SpecialtyController {
         }
 
     }
-
-//    private void printItems(Status status) {
-//        Service.printItems(status, repository);
-//    }
     private void printItems(Status status) {
         Service.printItems(repository.getAll(status));
     }
