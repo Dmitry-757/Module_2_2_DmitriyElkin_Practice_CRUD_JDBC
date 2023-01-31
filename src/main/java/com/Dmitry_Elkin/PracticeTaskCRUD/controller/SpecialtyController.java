@@ -18,7 +18,7 @@ public class SpecialtyController {
         boolean goBack = false;
         while (!goBack) {
             System.out.println("1 - New item, 2 - change item, 3 - Delete item, 4 - UnDelete item, " +
-                    "5 - print all items, 6 - print Active items, 7 - print Deleted items, 0 - go back");
+                    "5 - print all items, 6 - print Active items, 7 - print Deleted items, 8 - print item by Id, 0 - go back");
             if (sc.hasNextInt()) {
                 int choice = sc.nextInt();
                 sc.nextLine();
@@ -30,6 +30,7 @@ public class SpecialtyController {
                     case 5 -> printItems(null);
                     case 6 -> printItems(Status.ACTIVE);
                     case 7 -> printItems(Status.DELETED);
+                    case 8 -> printItemsById();
                     case 0 -> goBack = true;
                     default -> System.out.println("Wrong input!");
                 }
@@ -41,7 +42,7 @@ public class SpecialtyController {
     }
 
     private void createNewItem() {
-        String name = getStringParamFromConsole("first name");
+        String name = getStringParamFromConsole("name");
         repository.addOrUpdate(new Specialty(name));
     }
 
@@ -58,8 +59,16 @@ public class SpecialtyController {
 
     }
 
+//    private void printItems(Status status) {
+//        Service.printItems(status, repository);
+//    }
     private void printItems(Status status) {
-        Service.printItems(status, repository);
+        Service.printItems(repository.getAll(status));
+    }
+
+    private void printItemsById() {
+        long id = Service.getIntParamFromConsole("id ");
+        Service.printItems(repository.getById(id));
     }
 
 

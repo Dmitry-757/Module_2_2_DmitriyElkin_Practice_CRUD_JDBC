@@ -29,8 +29,22 @@ public class Service {
         }
     }
 
-    public static  <T> T getGenericParamFromConsole(String parameterName, GenericRepository<T, Long> repository, Status status) {
-        if (repository.getAll(status).size() == 0){
+    public static int getIntParamFromConsole(String parameterName) {
+        System.out.println("Input " + parameterName);
+        int intParam;
+        while (true) {
+            if (sc.hasNextInt()) {
+                intParam = sc.nextInt();
+                System.out.println(parameterName + " is: " + intParam);
+                return intParam;
+            } else {
+                System.out.println("wrong input... Please, try again!");
+            }
+        }
+    }
+
+    public static <T> T getGenericParamFromConsole(String parameterName, GenericRepository<T, Long> repository, Status status) {
+        if (repository.getAll(status).size() == 0) {
             System.out.println("There is no items for choice!");
             return null;
         }
@@ -59,7 +73,8 @@ public class Service {
         }
         return null;
     }
-    public static  <T> T getGenericParamFromConsole(String parameterName, GenericRepository<T, Long> repository) {
+
+    public static <T> T getGenericParamFromConsole(String parameterName, GenericRepository<T, Long> repository) {
         return getGenericParamFromConsole(parameterName, repository, Status.ACTIVE);
     }
 
@@ -69,7 +84,7 @@ public class Service {
         List<T> result = new ArrayList<>();
         System.out.println("Please, choose " + parameterName);
 
-        if (repository.getAll(Status.ACTIVE).size() == 0){
+        if (repository.getAll(Status.ACTIVE).size() == 0) {
             System.out.println("There is no Non-deleted items!");
             return result;
         }
@@ -100,11 +115,28 @@ public class Service {
     }
 
 
+//    public static <T> void printItems(Status status, GenericRepository<T, Long> repository) {
+//        System.out.println("current items : ");
+//        for (T item : repository.getAll(status)) {
+//            System.out.println(item.toString());
+//        }
+//    }
 
-    public static <T> void printItems(Status status, GenericRepository<T, Long> repository) {
+    public static <T> void printItems(List<T> items) {
         System.out.println("current items : ");
-        for (T item : repository.getAll(status)) {
+        if (items != null) {
+            for (T item : items) {
+                System.out.println(item.toString());
+            }
+        }
+    }
+
+    public static <T> void printItems(T item) {
+        System.out.println("current item : ");
+        if (item != null) {
             System.out.println(item.toString());
+        } else{
+            System.out.println("item was not found.");
         }
     }
 
