@@ -12,6 +12,8 @@ import org.powermock.reflect.Whitebox;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 @ExtendWith(MockitoExtension.class)
 class SpecialtyControllerTest {
@@ -34,6 +36,7 @@ class SpecialtyControllerTest {
         SpecialtyController sc = new SpecialtyController();
         Whitebox.invokeMethod(sc,"printItems", null);
 //        String actualValue = Whitebox.invokeMethod(sc,"methodName", "arguments");
+//        assertEquals(expected , actual);
     }
 
 }
