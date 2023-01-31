@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.powermock.reflect.Whitebox;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -26,10 +27,12 @@ class SpecialtyControllerTest {
         Mockito.when(mockRepo.getAll()).thenReturn(specialties);
 
         Service.printItems(mockRepo.getAll());
+    }
 
-
-//        SpecialtyController scMock = Mockito.mock(SpecialtyController.class);
-
+    @Test
+    void printItemsWithPowerMock() throws Exception {
+        SpecialtyController sc = new SpecialtyController();
+        Whitebox.invokeMethod(sc,"printItems", null);
     }
 
 }
