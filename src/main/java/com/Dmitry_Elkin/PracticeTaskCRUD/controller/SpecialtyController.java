@@ -6,8 +6,8 @@ import com.Dmitry_Elkin.PracticeTaskCRUD.repository.RepositoryFactory;
 import com.Dmitry_Elkin.PracticeTaskCRUD.repository.SpecialtyRepository;
 
 import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.MainController.sc;
-import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.Service.getGenericParamFromConsole;
-import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.Service.getStringParamFromConsole;
+import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.ConsoleService.getGenericParamFromConsole;
+import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.ConsoleService.getStringParamFromConsole;
 
 public class SpecialtyController {
 
@@ -59,12 +59,12 @@ public class SpecialtyController {
 
     }
     private void printItems(Status status) {
-        Service.printItems(repository.getAll(status));
+        ConsoleService.printItems(repository.getAll(status));
     }
 
     private void printItemsById() {
-        long id = Service.getIntParamFromConsole("id ");
-        Service.printItems(repository.getById(id));
+        long id = ConsoleService.getIntParamFromConsole("id ");
+        ConsoleService.printItems(repository.getById(id));
     }
 
 

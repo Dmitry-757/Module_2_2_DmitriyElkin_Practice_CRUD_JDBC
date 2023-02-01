@@ -21,14 +21,23 @@ class SpecialtyControllerTest {
     @Test
     void printItems(){
 
-        SpecialtyRepository mockRepo = Mockito.mock(SpecialtyRepository.class);
         List<Specialty> specialties = new LinkedList<>();
         specialties.add(new Specialty("Specialty 1"));
         specialties.add(new Specialty("Specialty 2"));
 
+        SpecialtyRepository mockRepo = Mockito.mock(SpecialtyRepository.class);
         Mockito.when(mockRepo.getAll()).thenReturn(specialties);
 
-        Service.printItems(mockRepo.getAll());
+        ConsoleService.printItems(mockRepo.getAll());
+    }
+
+    @Test
+    void printItemsById(){
+
+        SpecialtyRepository mockRepo = Mockito.mock(SpecialtyRepository.class);
+        Mockito.when(mockRepo.getById(1L)).thenReturn(new Specialty(1,"Specialty with id = 1"));
+
+        ConsoleService.printItems(mockRepo.getById(1L));
     }
 
     @Test

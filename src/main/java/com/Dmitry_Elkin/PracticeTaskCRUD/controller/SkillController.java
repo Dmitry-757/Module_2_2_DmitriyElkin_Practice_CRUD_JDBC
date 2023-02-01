@@ -7,8 +7,8 @@ import com.Dmitry_Elkin.PracticeTaskCRUD.repository.SkillRepository;
 
 
 import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.MainController.sc;
-import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.Service.getGenericParamFromConsole;
-import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.Service.getStringParamFromConsole;
+import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.ConsoleService.getGenericParamFromConsole;
+import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.ConsoleService.getStringParamFromConsole;
 
 
 public class SkillController {
@@ -62,12 +62,12 @@ public class SkillController {
 //        Service.printItems(status, repository);
 //    }
     private void printItems(Status status) {
-        Service.printItems(repository.getAll(status));
+        ConsoleService.printItems(repository.getAll(status));
     }
 
     private void printItemsById() {
-        long id = Service.getIntParamFromConsole("id ");
-        Service.printItems(repository.getById(id));
+        long id = ConsoleService.getIntParamFromConsole("id ");
+        ConsoleService.printItems(repository.getById(id));
     }
 
     private void deleteItem() {

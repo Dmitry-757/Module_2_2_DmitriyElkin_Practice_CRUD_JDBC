@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.MainController.sc;
 
-public class Service {
+public class ConsoleService {
 
     public static String getStringParamFromConsole(String parameterName) {
         Pattern pattern = Pattern.compile("^[a-zA-Zа-яА-Я\s-_#]*");

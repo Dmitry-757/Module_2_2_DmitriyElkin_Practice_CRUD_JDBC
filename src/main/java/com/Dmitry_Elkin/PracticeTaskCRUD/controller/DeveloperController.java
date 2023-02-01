@@ -10,7 +10,7 @@ import com.Dmitry_Elkin.PracticeTaskCRUD.repository.*;
 import java.util.HashSet;
 
 import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.MainController.sc;
-import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.Service.*;
+import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.ConsoleService.*;
 
 public class DeveloperController {
 
@@ -79,11 +79,11 @@ public class DeveloperController {
 //        Service.printItems(status, repository);
 //    }
     private void printItems(Status status) {
-        Service.printItems(repository.getAll(status));
+        ConsoleService.printItems(repository.getAll(status));
     }
     private void printItemsById() {
-        long id = Service.getIntParamFromConsole("id ");
-        Service.printItems(repository.getById(id));
+        long id = ConsoleService.getIntParamFromConsole("id ");
+        ConsoleService.printItems(repository.getById(id));
     }
 
 
