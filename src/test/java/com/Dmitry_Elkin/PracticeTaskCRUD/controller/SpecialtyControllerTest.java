@@ -67,18 +67,20 @@ class SpecialtyControllerTest {
 
     @Test
     public void SControllerTest(){
-//        MainController mc = new MainController();
         SpecialtyController controller = new SpecialtyController(mockRepository);
 
-//        ByteArrayInputStream in1 = new ByteArrayInputStream("1".getBytes());
         InputStream inputStream = System.in;  // сохраняем ссылку на ввод с клавиатуры
-        byte[] b =  ByteBuffer.allocate(4).putInt(1).array();
-//        int a = 1;
+//        byte[] b =  ByteBuffer.allocate(4).putInt(1).array();
 //        byte[] b = BigInteger.valueOf(1).toByteArray();
-        System.setIn(new ByteArrayInputStream(b)); // подменяем ввод
+//        System.setIn(new ByteArrayInputStream(b)); // подменяем ввод
+        System.setIn(new ByteArrayInputStream("1\nTest Specialty\n0\n0\n".getBytes())); // подменяем ввод
         controller.menu();
-        System.setIn(new ByteArrayInputStream("Test Specialty".getBytes())); // подменяем ввод
         System.setIn(inputStream);            // подменяем обратно
+
+        System.setIn(new ByteArrayInputStream("2\nTest Specialty\n0\n0\n".getBytes())); // подменяем ввод
+        controller.menu();
+        System.setIn(inputStream);            // подменяем обратно
+
 
 //        Mockito.verify(mockSController).createNewItem();
         Mockito.verify(mockRepository).addOrUpdate(new Specialty("Test Specialty"));
