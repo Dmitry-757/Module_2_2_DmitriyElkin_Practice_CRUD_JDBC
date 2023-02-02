@@ -134,7 +134,7 @@ public class ConsoleService {
     public static <T> void printItems(T item) {
         System.out.println("current item : ");
         if (item != null) {
-            System.out.println(item.toString());
+            System.out.println(item);
         } else{
             System.out.println("item was not found.");
         }

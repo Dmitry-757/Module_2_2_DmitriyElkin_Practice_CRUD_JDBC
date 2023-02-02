@@ -17,6 +17,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -51,13 +52,13 @@ class SpecialtyControllerTest {
         ConsoleService.printItems(mockRepo.getById(1L));
     }
 
-    @Test
-    void printItemsWithPowerMock() throws Exception {
-        SpecialtyController sc = new SpecialtyController();
-        Whitebox.invokeMethod(sc,"printItems", null);
-//        String actualValue = Whitebox.invokeMethod(sc,"methodName", "arguments");
-//        assertEquals(expected , actual);
-    }
+//    @Test
+//    void printItemsWithPowerMock() throws Exception {
+//        SpecialtyController sc = new SpecialtyController();
+//        Whitebox.invokeMethod(sc,"printItems", null);
+////        String actualValue = Whitebox.invokeMethod(sc,"methodName", "arguments");
+////        assertEquals(expected , actual);
+//    }
 
     @Test
     public void createNewItem(){
@@ -74,15 +75,30 @@ class SpecialtyControllerTest {
 //        byte[] b = BigInteger.valueOf(1).toByteArray();
 //        System.setIn(new ByteArrayInputStream(b)); // подменяем ввод
         System.setIn(new ByteArrayInputStream("1\nTest Specialty\n0\n0\n".getBytes())); // подменяем ввод
+//        System.setIn(new ByteArrayInputStream("2\n".getBytes())); // подменяем ввод
         controller.menu();
         System.setIn(inputStream);            // подменяем обратно
 
-        System.setIn(new ByteArrayInputStream("2\nTest Specialty\n0\n0\n".getBytes())); // подменяем ввод
+//        System.out.print("\033[H\033[2J");
+//        System.out.flush();
+
+        List<Specialty> specialties = new LinkedList<>();
+        specialties.add(new Specialty("Specialty 1"));
+        specialties.add(new Specialty("Specialty 2"));
+
+        Mockito.when(mockRepository.getAll()).thenReturn(specialties);//задаем поведение для заглушки
+
+//        System.setIn(new ByteArrayInputStream("2\n1\n0\n0\n".getBytes())); // подменяем ввод
+        MainController.sc.close();
+        System.setIn(new ByteArrayInputStream("2\n".getBytes())); // подменяем ввод
+        MainController.sc = new Scanner(System.in);
         controller.menu();
         System.setIn(inputStream);            // подменяем обратно
 
 
 //        Mockito.verify(mockSController).createNewItem();
         Mockito.verify(mockRepository).addOrUpdate(new Specialty("Test Specialty"));
+
+        Mockito.verify(mockRepository).addOrUpdate(new Specialty("Specialty 1"));
     }
 }
