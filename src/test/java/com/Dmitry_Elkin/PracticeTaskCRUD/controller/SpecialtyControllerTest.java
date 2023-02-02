@@ -3,12 +3,18 @@ package com.Dmitry_Elkin.PracticeTaskCRUD.controller;
 
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Specialty;
 import com.Dmitry_Elkin.PracticeTaskCRUD.repository.SpecialtyRepository;
+import com.Dmitry_Elkin.PracticeTaskCRUD.repository.SpecialtyRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.powermock.reflect.Whitebox;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,6 +24,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(MockitoExtension.class)
 class SpecialtyControllerTest {
 
+    @Mock
+    SpecialtyRepositoryImpl mockRepository;
+    @Mock
+    SpecialtyController mockSController;
+
     @Test
     void printItems(){
 
@@ -25,8 +36,8 @@ class SpecialtyControllerTest {
         specialties.add(new Specialty("Specialty 1"));
         specialties.add(new Specialty("Specialty 2"));
 
-        SpecialtyRepository mockRepo = Mockito.mock(SpecialtyRepository.class);
-        Mockito.when(mockRepo.getAll()).thenReturn(specialties);
+        SpecialtyRepository mockRepo = Mockito.mock(SpecialtyRepository.class);//создаем заглушку
+        Mockito.when(mockRepo.getAll()).thenReturn(specialties);//задаем поведение для заглушки
 
         ConsoleService.printItems(mockRepo.getAll());
     }
@@ -48,4 +59,28 @@ class SpecialtyControllerTest {
 //        assertEquals(expected , actual);
     }
 
+    @Test
+    public void createNewItem(){
+        mockRepository.addOrUpdate(new Specialty(1,"Specialty with id = 1"));
+        Mockito.verify(mockRepository).addOrUpdate(new Specialty(1,"Specialty with id = 1"));
+    }
+
+    @Test
+    public void SControllerTest(){
+//        MainController mc = new MainController();
+        SpecialtyController controller = new SpecialtyController(mockRepository);
+
+//        ByteArrayInputStream in1 = new ByteArrayInputStream("1".getBytes());
+        InputStream inputStream = System.in;  // сохраняем ссылку на ввод с клавиатуры
+        byte[] b =  ByteBuffer.allocate(4).putInt(1).array();
+//        int a = 1;
+//        byte[] b = BigInteger.valueOf(1).toByteArray();
+        System.setIn(new ByteArrayInputStream(b)); // подменяем ввод
+        controller.menu();
+        System.setIn(new ByteArrayInputStream("Test Specialty".getBytes())); // подменяем ввод
+        System.setIn(inputStream);            // подменяем обратно
+
+//        Mockito.verify(mockSController).createNewItem();
+        Mockito.verify(mockRepository).addOrUpdate(new Specialty("Test Specialty"));
+    }
 }

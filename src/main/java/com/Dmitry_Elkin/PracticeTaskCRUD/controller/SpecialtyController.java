@@ -11,7 +11,15 @@ import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.ConsoleService.getStr
 
 public class SpecialtyController {
 
-    private static final SpecialtyRepository repository = RepositoryFactory.getSpecialtyRepository();
+//    private static final SpecialtyRepository repository = RepositoryFactory.getSpecialtyRepository();
+private SpecialtyRepository repository;
+
+    public SpecialtyController() {
+        this.repository = RepositoryFactory.getSpecialtyRepository();
+    }
+    public SpecialtyController(SpecialtyRepository repository) {
+        this.repository = repository;
+    }
 
     //************* menu ********************
     public void menu() {
@@ -41,7 +49,7 @@ public class SpecialtyController {
         }
     }
 
-    private void createNewItem() {
+    void createNewItem() {
         String name = getStringParamFromConsole("name");
         repository.addOrUpdate(new Specialty(name));
     }
