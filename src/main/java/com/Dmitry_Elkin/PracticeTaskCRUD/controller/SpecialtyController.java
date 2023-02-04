@@ -2,97 +2,40 @@ package com.Dmitry_Elkin.PracticeTaskCRUD.controller;
 
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Specialty;
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Status;
-import com.Dmitry_Elkin.PracticeTaskCRUD.repository.RepositoryFactory;
 import com.Dmitry_Elkin.PracticeTaskCRUD.repository.SpecialtyRepository;
+import com.Dmitry_Elkin.PracticeTaskCRUD.repository.SpecialtyRepositoryImpl;
 
-import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.MainController.sc;
-import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.ConsoleService.getGenericParamFromConsole;
-import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.ConsoleService.getStringParamFromConsole;
+import java.util.List;
 
 public class SpecialtyController {
+    private final SpecialtyRepository repository = new SpecialtyRepositoryImpl();
 
-//    private static final SpecialtyRepository repository = RepositoryFactory.getSpecialtyRepository();
-private SpecialtyRepository repository;
-
-    public SpecialtyController() {
-        this.repository = RepositoryFactory.getSpecialtyRepository();
+    public Specialty getById(long id){
+        return repository.getById(id);
     }
-    public SpecialtyController(SpecialtyRepository repository) {
-        this.repository = repository;
+    public List<Specialty> getAll(Status status){
+        return repository.getAll(status);
     }
-
-    //************* menu ********************
-    public void menu() {
-        boolean goBack = false;
-        while (!goBack) {
-            System.out.println("1 - New item, 2 - change item, 3 - Delete item, 4 - UnDelete item, " +
-                    "5 - print all items, 6 - print Active items, 7 - print Deleted items, 8 - print item by Id, 0 - go back");
-            if (sc.hasNextInt()) {
-                int choice = sc.nextInt();
-                sc.nextLine();
-                switch (choice) {
-                    case 1 -> createNewItem();
-                    case 2 -> changeItem();
-                    case 3 -> deleteItem();
-                    case 4 -> unDeleteItem();
-                    case 5 -> printItems(null);
-                    case 6 -> printItems(Status.ACTIVE);
-                    case 7 -> printItems(Status.DELETED);
-                    case 8 -> printItemsById();
-                    case 0 -> goBack = true;
-                    default -> System.out.println("Wrong input!");
-                }
-            } else {
-                System.out.println("wrong input... Please, use only digits!");
-                sc.nextLine();
-            }
-        }
+    public List<Specialty> getAll(){
+        return repository.getAll();
     }
 
-    void createNewItem() {
-        String name = getStringParamFromConsole("name");
-        repository.addOrUpdate(new Specialty(name));
+    public void insert(Specialty item){
+        repository.addOrUpdate(item);
     }
 
-    private void changeItem() {
-
-        Specialty item = getGenericParamFromConsole("Specialty", repository);
-        if (item != null) {
-//            System.out.println("editing item = " + item.toString());
-            System.out.println("editing item = " + item);
-            String newName = getStringParamFromConsole("name");
-            item.setName(newName);
-            repository.addOrUpdate(item);
-        }
-
-    }
-    private void printItems(Status status) {
-        ConsoleService.printItems(repository.getAll(status));
+    public void update(Specialty item){
+        repository.addOrUpdate(item);
     }
 
-    private void printItemsById() {
-        long id = ConsoleService.getIntParamFromConsole("id ");
-        ConsoleService.printItems(repository.getById(id));
+    public void delete(Specialty item){
+        item.setDeleted();
+        update(item);
     }
 
-
-    private void deleteItem() {
-        Specialty item = getGenericParamFromConsole("Specialty", repository, Status.ACTIVE);
-        if (item != null) {
-//            System.out.println("deleting item is : " + item.toString());
-            System.out.println("deleting item is : " + item);
-            repository.delete(item);
-        }
+    public void unDelete(Specialty item){
+        item.setUnDeleted();
+        update(item);
     }
 
-    private void unDeleteItem() {
-        Specialty item = getGenericParamFromConsole("Specialty", repository, Status.DELETED);
-        if (item != null) {
-//            System.out.println("UnDeleting item is : " + item.toString());
-            System.out.println("UnDeleting item is : " + item);
-            repository.unDelete(item);
-        }
-    }
-
-    //*****************************************************
 }

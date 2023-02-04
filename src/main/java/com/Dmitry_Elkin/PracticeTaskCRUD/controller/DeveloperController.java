@@ -1,106 +1,40 @@
 package com.Dmitry_Elkin.PracticeTaskCRUD.controller;
 
-
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Developer;
-import com.Dmitry_Elkin.PracticeTaskCRUD.model.Skill;
-import com.Dmitry_Elkin.PracticeTaskCRUD.model.Specialty;
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Status;
-import com.Dmitry_Elkin.PracticeTaskCRUD.repository.*;
+import com.Dmitry_Elkin.PracticeTaskCRUD.repository.DeveloperRepository;
+import com.Dmitry_Elkin.PracticeTaskCRUD.repository.DeveloperRepositoryImpl;
 
-import java.util.HashSet;
-
-import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.MainController.sc;
-import static com.Dmitry_Elkin.PracticeTaskCRUD.controller.ConsoleService.*;
+import java.util.List;
 
 public class DeveloperController {
-
-    private static final DeveloperRepository repository = RepositoryFactory.getDeveloperRepository();
-
-    //************* menu ********************
-    public void menu() {
-        boolean goBack = false;
-        while (!goBack) {
-            System.out.println("1 - New item, 2 - change item, 3 - Delete item, 4 - UnDelete item, " +
-                    "5 - print all items, 6 - print Active items, 7 - print Deleted items, 8 - print item by Id, 0 - go back");
-            if (sc.hasNextInt()) {
-                int choice = sc.nextInt();
-                sc.nextLine();
-                switch (choice) {
-                    case 1 -> createNewItem();
-                    case 2 -> changeItem();
-                    case 3 -> deleteItem();
-                    case 4 -> unDeleteItem();
-                    case 5 -> printItems(null);
-                    case 6 -> printItems(Status.ACTIVE);
-                    case 7 -> printItems(Status.DELETED);
-                    case 8 -> printItemsById();
-                    case 0 -> goBack = true;
-                    default -> System.out.println("Wrong input!");
-                }
-            } else {
-                System.out.println("wrong input... Please, use only digits!");
-                sc.nextLine();
-            }
-        }
+    private final DeveloperRepository repository = new DeveloperRepositoryImpl();
+    public Developer getById(long id){
+        return repository.getById(id);
+    }
+    public List<Developer> getAll(Status status){
+        return repository.getAll(status);
+    }
+    public List<Developer> getAll(){
+        return repository.getAll();
     }
 
-    private void createNewItem() {
-        String firstName = getStringParamFromConsole("first name");
-        String lastName = getStringParamFromConsole("second name");
-        HashSet<Skill> skills = new HashSet<>(getGenericListFromConsole("Skill", RepositoryFactory.getSkillRepository()));
-        Specialty specialty = getGenericParamFromConsole("Specialty", RepositoryFactory.getSpecialtyRepository());
-        repository.addOrUpdate(new Developer(firstName, lastName, skills, specialty));
+    public void insert(Developer item){
+        repository.addOrUpdate(item);
     }
 
-
-
-    private void changeItem() {
-        Developer item = getGenericParamFromConsole("Developer", repository);
-        if (item != null) {
-            System.out.println("editing item = " + item);
-            String firstName = getStringParamFromConsole("first name");
-            String lastName = getStringParamFromConsole("second name");
-            HashSet<Skill> skills = new HashSet<>(getGenericListFromConsole("Skills", RepositoryFactory.getSkillRepository()));
-            Specialty specialty = getGenericParamFromConsole("Specialty", RepositoryFactory.getSpecialtyRepository());
-            item.setFirstName(firstName);
-            item.setLastName(lastName);
-            if (skills.size() != 0) {
-                item.setSkills(skills);
-            }
-            if (specialty != null) {
-                item.setSpecialty(specialty);
-            }
-            repository.addOrUpdate(item);
-        }
-
+    public void update(Developer item){
+        repository.addOrUpdate(item);
     }
 
-//    public void printItems(Status status) {
-//        Service.printItems(status, repository);
-//    }
-    private void printItems(Status status) {
-        ConsoleService.printItems(repository.getAll(status));
-    }
-    private void printItemsById() {
-        long id = ConsoleService.getIntParamFromConsole("id ");
-        ConsoleService.printItems(repository.getById(id));
+    public void delete(Developer item){
+        item.setDeleted();
+        update(item);
     }
 
-
-    private static void deleteItem() {
-        Developer item = getGenericParamFromConsole("Developer", repository, Status.ACTIVE);
-        if (item != null) {
-            System.out.println("deleting item is : " + item);
-            repository.delete(item);
-        }
-
+    public void unDelete(Developer item){
+        item.setUnDeleted();
+        update(item);
     }
 
-    private void unDeleteItem() {
-        Developer item = getGenericParamFromConsole("Developer", repository, Status.DELETED);
-        if (item != null) {
-            System.out.println("UnDeleting item is : " + item);
-            repository.unDelete(item);
-        }
-    }
 }

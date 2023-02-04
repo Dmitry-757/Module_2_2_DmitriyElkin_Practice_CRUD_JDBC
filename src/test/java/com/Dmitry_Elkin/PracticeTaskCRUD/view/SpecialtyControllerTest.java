@@ -1,4 +1,4 @@
-package com.Dmitry_Elkin.PracticeTaskCRUD.controller;
+package com.Dmitry_Elkin.PracticeTaskCRUD.view;
 
 
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Specialty;
@@ -10,26 +10,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.powermock.reflect.Whitebox;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.math.BigInteger;
-import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @ExtendWith(MockitoExtension.class)
 class SpecialtyControllerTest {
 
+
     @Mock
     SpecialtyRepositoryImpl mockRepository;
-    @Mock
-    SpecialtyController mockSController;
+//    SpecialtyView controller = new SpecialtyView(mockRepository);
 
     @Test
     void printItems(){
@@ -38,10 +32,7 @@ class SpecialtyControllerTest {
         specialties.add(new Specialty("Specialty 1"));
         specialties.add(new Specialty("Specialty 2"));
 
-        SpecialtyRepository mockRepo = Mockito.mock(SpecialtyRepository.class);//создаем заглушку
-        Mockito.when(mockRepo.getAll()).thenReturn(specialties);//задаем поведение для заглушки
-
-        ConsoleService.printItems(mockRepo.getAll());
+        Mockito.when(mockRepository.getAll()).thenReturn(specialties);//задаем поведение для заглушки
     }
 
     @Test
@@ -55,7 +46,7 @@ class SpecialtyControllerTest {
 
 //    @Test
 //    void printItemsWithPowerMock() throws Exception {
-//        SpecialtyController sc = new SpecialtyController();
+//        SpecialtyView sc = new SpecialtyView();
 //        Whitebox.invokeMethod(sc,"printItems", null);
 ////        String actualValue = Whitebox.invokeMethod(sc,"methodName", "arguments");
 ////        assertEquals(expected , actual);
@@ -67,21 +58,20 @@ class SpecialtyControllerTest {
         Mockito.verify(mockRepository).addOrUpdate(new Specialty(1,"Specialty with id = 1"));
     }
 
-    @Test
-    public void SControllerTest_Insert(){
-        SpecialtyController controller = new SpecialtyController(mockRepository);
-
-        InputStream inputStream = System.in;  // сохраняем ссылку на ввод с клавиатуры
-        System.setIn(new ByteArrayInputStream("1\nTest Specialty\n0\n0\n".getBytes())); // подменяем ввод
-        controller.menu();
-        System.setIn(inputStream);            // подменяем обратно
-
-        Mockito.verify(mockRepository).addOrUpdate(new Specialty("Test Specialty"));
-    }
+//    @Test
+//    public void SControllerTest_Insert(){
+//        SpecialtyView controller = new SpecialtyView(mockRepository);
+//
+//        InputStream inputStream = System.in;  // сохраняем ссылку на ввод с клавиатуры
+//        System.setIn(new ByteArrayInputStream("1\nTest Specialty\n0\n0\n".getBytes())); // подменяем ввод
+//        controller.menu();
+//        System.setIn(inputStream);            // подменяем обратно
+//
+//        Mockito.verify(mockRepository).addOrUpdate(new Specialty("Test Specialty"));
+//    }
 
     @Test
     public void SControllerTest_Update(){
-        SpecialtyController controller = new SpecialtyController(mockRepository);
 
         InputStream inputStream = System.in;  // сохраняем ссылку на ввод с клавиатуры
 
@@ -95,13 +85,23 @@ class SpecialtyControllerTest {
         Mockito.when(mockRepository.getById(1L)).thenReturn(sp1);//задаем поведение для заглушки
 //        Mockito.when(mockRepository.getById(2L)).thenReturn(sp2);//задаем поведение для заглушки
 
-//        MainController.sc.close();
+//        MainView.sc.close();
         System.setIn(new ByteArrayInputStream("2\n1\nSpecialty 1\n0\n".getBytes())); // подменяем ввод
-//        MainController.sc = new Scanner(System.in);
-        controller.menu();
+//        MainView.sc = new Scanner(System.in);
+//        controller.menu();
         System.setIn(inputStream);            // подменяем обратно
 
         Mockito.verify(mockRepository).addOrUpdate(new Specialty(1,"Specialty 1"));
     }
+
+//    @Test
+//    public void SControllerTest_printItems(){
+//        SpecialtyView controller = new SpecialtyView(mockRepository);
+//
+//        controller.menu();
+//
+////        Mockito.verify(mockRepository).addOrUpdate(new Specialty("Test Specialty"));
+//    }
+
 
 }

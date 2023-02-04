@@ -1,7 +1,7 @@
 package com.Dmitry_Elkin.PracticeTaskCRUD;
 
 
-import com.Dmitry_Elkin.PracticeTaskCRUD.controller.MainController;
+import com.Dmitry_Elkin.PracticeTaskCRUD.view.MainView;
 import com.Dmitry_Elkin.PracticeTaskCRUD.repository.DBConnection;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
@@ -38,7 +38,7 @@ public class AppMain {
             throw new RuntimeException(e);
         }
 
-        MainController cli = new MainController();
+        MainView cli = new MainView();
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {

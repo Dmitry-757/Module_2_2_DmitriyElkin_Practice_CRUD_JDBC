@@ -1,17 +1,17 @@
-package com.Dmitry_Elkin.PracticeTaskCRUD.controller;
+package com.Dmitry_Elkin.PracticeTaskCRUD.view;
 
 
 
 import java.util.Scanner;
 
-public class MainController {
+public class MainView {
     public static Scanner sc = new Scanner(System.in);
 
     public void upLevelMenu() {
         boolean exit = false;
-        SkillController skillController = new SkillController();
-        SpecialtyController specialtyController = new SpecialtyController();
-        DeveloperController developerController = new DeveloperController();
+        SkillView skillController = new SkillView();
+        SpecialtyView specialtyController = new SpecialtyView();
+        DeveloperView developerController = new DeveloperView();
 
         while (!exit) {
             System.out.println("1 - work with Skills, " +
