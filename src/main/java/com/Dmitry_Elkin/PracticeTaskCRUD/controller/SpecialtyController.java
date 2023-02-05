@@ -20,12 +20,15 @@ public class SpecialtyController {
         return repository.getAll();
     }
 
-    public void insert(Specialty item){
+    public void insert(String name){
+        Specialty item = new Specialty(name);
         repository.addOrUpdate(item);
     }
 
     public void update(Specialty item){
-        repository.addOrUpdate(item);
+        if (item != null) {
+            repository.addOrUpdate(item);
+        }
     }
 
     public void delete(Specialty item){

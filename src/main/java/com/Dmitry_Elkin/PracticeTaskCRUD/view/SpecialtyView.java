@@ -39,18 +39,19 @@ public class SpecialtyView {
 
     void createNewItem() {
         String name = ConsoleService.getStringParamFromConsole("name");
-        controller.insert(new Specialty(name));
+        controller.insert(name);
     }
 
     private void changeItem() {
 
         Specialty item = ConsoleService.getItemFromConsole("Specialty",controller.getAll());
         if (item != null) {
-//            System.out.println("editing item = " + item.toString());
             System.out.println("editing item = " + item);
             String newName = ConsoleService.getStringParamFromConsole("name");
-            item.setName(newName);
-            controller.update(item);
+            if (!newName.equals(item.getName())) {
+                item.setName(newName);
+                controller.update(item);
+            }
         }
 
     }
