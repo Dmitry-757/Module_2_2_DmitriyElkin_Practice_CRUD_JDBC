@@ -1,4 +1,4 @@
-package com.Dmitry_Elkin.PracticeTaskCRUD.view;
+package com.Dmitry_Elkin.PracticeTaskCRUD.controller;
 
 
 import com.Dmitry_Elkin.PracticeTaskCRUD.controller.SpecialtyController;
