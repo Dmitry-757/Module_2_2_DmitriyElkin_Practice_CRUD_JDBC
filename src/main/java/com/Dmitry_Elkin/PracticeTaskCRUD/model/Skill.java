@@ -6,22 +6,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
-//implements BaseModelsMethsI - for my experiment by creating common repository
-//meth getStaticLastId() is needed  for possibility to get lastId from instance of model-class
-public class Skill implements BaseModelsMethsI{
-    private static volatile long lastId;
-
-    static{
-        if (lastId == 0){
-            try {
-                if (Files.exists(Path.of("skill.lastId"))) {
-                    lastId = Long.parseLong(Files.readString(Path.of("skill.lastId")));
-                }
-            } catch (IOException e) {
-                System.out.println("oops! there is some io exception "+e.getMessage());
-            }
-        }
-    }
+public class Skill {
     private long id;
     private String name;
     private Status status;
@@ -44,14 +29,6 @@ public class Skill implements BaseModelsMethsI{
     }
 
 
-    public static long getLastId() {
-        return Skill.lastId;
-    }
-    @Override
-    public long getStaticLastId() {//for using in MyGenericRepositoryImpl
-        return Skill.lastId;
-    }
-
 
     public long getId() {
         return id;
@@ -59,11 +36,6 @@ public class Skill implements BaseModelsMethsI{
 
     public void setId(long id) {
         this.id = id;
-    }
-    public void setNewId() {
-        AtomicLong l = new AtomicLong(lastId);
-        Skill.lastId = l.incrementAndGet();
-        this.id = lastId;
     }
 
     public void setDeleted() {

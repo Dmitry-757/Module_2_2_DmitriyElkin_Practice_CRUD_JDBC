@@ -3,7 +3,7 @@ package com.Dmitry_Elkin.PracticeTaskCRUD.controller;
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Developer;
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Status;
 import com.Dmitry_Elkin.PracticeTaskCRUD.repository.DeveloperRepository;
-import com.Dmitry_Elkin.PracticeTaskCRUD.repository.DeveloperRepositoryImpl;
+import com.Dmitry_Elkin.PracticeTaskCRUD.repository.jdbc.DeveloperRepositoryImpl;
 
 import java.util.List;
 

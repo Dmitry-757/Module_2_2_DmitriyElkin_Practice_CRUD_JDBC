@@ -2,8 +2,7 @@ package com.Dmitry_Elkin.PracticeTaskCRUD.controller;
 
 
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Skill;
-import com.Dmitry_Elkin.PracticeTaskCRUD.model.Specialty;
-import com.Dmitry_Elkin.PracticeTaskCRUD.repository.SkillRepositoryImpl;
+import com.Dmitry_Elkin.PracticeTaskCRUD.repository.jdbc.SkillRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,8 +1,8 @@
 package com.Dmitry_Elkin.PracticeTaskCRUD;
 
 
+import com.Dmitry_Elkin.PracticeTaskCRUD.utils.JdbcUtils;
 import com.Dmitry_Elkin.PracticeTaskCRUD.view.MainView;
-import com.Dmitry_Elkin.PracticeTaskCRUD.repository.DBConnection;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
 import liquibase.Liquibase;
@@ -22,7 +22,7 @@ public class AppMain {
 
 
         System.out.println("Start...");
-        Connection connection = DBConnection.getConnection();
+        Connection connection = JdbcUtils.getConnection();
         Database database;
         try {
             database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));

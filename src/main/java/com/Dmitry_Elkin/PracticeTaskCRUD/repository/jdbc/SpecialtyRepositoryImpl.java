@@ -1,7 +1,9 @@
-package com.Dmitry_Elkin.PracticeTaskCRUD.repository;
+package com.Dmitry_Elkin.PracticeTaskCRUD.repository.jdbc;
 
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Specialty;
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Status;
+import com.Dmitry_Elkin.PracticeTaskCRUD.repository.SpecialtyRepository;
+import com.Dmitry_Elkin.PracticeTaskCRUD.utils.JdbcUtils;
 
 import java.sql.*;
 import java.util.LinkedList;
@@ -13,13 +15,8 @@ public class SpecialtyRepositoryImpl implements SpecialtyRepository {
             """
                     INSERT specialty_tbl(name, statusId)
                     VALUES (?, ?)""";
-    //    private static final String SELECT_ALL = """
-//            select sp.id, sp.name, st.status_value from specialty_tbl as sp
-//            left join status_tbl as st\s
-//            on sp.statusId = st.id""";
     private static final String SELECT_ALL = "select * from specialty_tbl";
 
-    //    private static final String DELETE_SQL = "delete from specialty_tbl where id = ?;";
     private static final String UPDATE_SQL = "update specialty_tbl set name = ?, statusId = ? where id = ?;";
 
 
@@ -33,7 +30,7 @@ public class SpecialtyRepositoryImpl implements SpecialtyRepository {
         }
 
         List<Specialty> itemList = new LinkedList<>();
-        Connection connection = DBConnection.getConnection();
+        Connection connection = JdbcUtils.getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -44,7 +41,7 @@ public class SpecialtyRepositoryImpl implements SpecialtyRepository {
                 itemList.add(new Specialty(id, name, statusId));
             }
         } catch (SQLException e) {
-            StatusRepository.printSQLException(e);
+            JdbcUtils.printSQLException(e);
         }
 
         return itemList;
@@ -60,7 +57,7 @@ public class SpecialtyRepositoryImpl implements SpecialtyRepository {
     public Specialty getById(Long itemId) {
         String selectStatement = SELECT_ALL + " where id = " + itemId;
         List<Specialty> itemList = new LinkedList<>();
-        Connection connection = DBConnection.getConnection();
+        Connection connection = JdbcUtils.getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -74,7 +71,7 @@ public class SpecialtyRepositoryImpl implements SpecialtyRepository {
                 return itemList.get(0);
             }
         } catch (SQLException e) {
-            StatusRepository.printSQLException(e);
+            JdbcUtils.printSQLException(e);
         }
         return null;
     }
@@ -93,7 +90,7 @@ public class SpecialtyRepositoryImpl implements SpecialtyRepository {
 
 
     public void insert(Specialty item) {
-        Connection connection = DBConnection.getConnection();
+        Connection connection = JdbcUtils.getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL,
                 Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, item.getName());
@@ -106,12 +103,12 @@ public class SpecialtyRepositoryImpl implements SpecialtyRepository {
 //                rowInserted = true;
             }
         } catch (SQLException e) {
-            StatusRepository.printSQLException(e);
+            JdbcUtils.printSQLException(e);
         }
     }
 
     public void update(Specialty item) {
-        Connection connection = DBConnection.getConnection();
+        Connection connection = JdbcUtils.getConnection();
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_SQL)) {
             statement.setString(1, item.getName());
             statement.setInt(2, item.getStatus().getId());
@@ -120,7 +117,7 @@ public class SpecialtyRepositoryImpl implements SpecialtyRepository {
 
 //            rowUpdated = statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            StatusRepository.printSQLException(e);
+            JdbcUtils.printSQLException(e);
         }
 
     }

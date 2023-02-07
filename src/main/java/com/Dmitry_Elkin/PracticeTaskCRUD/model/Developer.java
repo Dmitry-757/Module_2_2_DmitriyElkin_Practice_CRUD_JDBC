@@ -5,24 +5,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
+
 import java.util.stream.Collectors;
 
-//implements BaseModelsMethsI - for my experiment by creating common repository
-//meth getStaticLastId() is needed  for possibility to get lastId from instance of model-class
-public class Developer implements BaseModelsMethsI {
-    private static volatile long lastId;
-    static{
-        if (lastId == 0){
-            try {
-                if (Files.exists(Path.of("developer.lastId"))) {
-                    lastId = Long.parseLong(Files.readString(Path.of("developer.lastId")));
-                }
-            } catch (IOException e) {
-                System.out.println("oops! there is some io exception "+e.getMessage());
-            }
-        }
-    }
+public class Developer {
 
     private long id;
     private String firstName;
@@ -55,13 +41,6 @@ public class Developer implements BaseModelsMethsI {
         this.status = Status.ACTIVE;
     }
 
-    public static long getLastId() {
-        return lastId;
-    }
-    @Override
-    public long getStaticLastId() {//for using in MyGenericRepositoryImpl
-        return Developer.lastId;
-    }
 
     public long getId() {
         return id;
@@ -69,12 +48,6 @@ public class Developer implements BaseModelsMethsI {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public void setNewId() {
-        AtomicLong l = new AtomicLong(lastId);
-        Developer.lastId = l.incrementAndGet();
-        this.id = lastId;
     }
 
     public String getFirstName() {
@@ -113,16 +86,6 @@ public class Developer implements BaseModelsMethsI {
         return status;
     }
 
-    //*** for compatability with interface BaseModelsMethsI ***
-    @Override
-    public String getName() {
-        return getFirstName();
-    }
-    @Override
-    public void setName(String name) {
-        setFirstName(name);
-    }
-    //*****************************************************
 
     public void setDeleted() {
         status = Status.DELETED;

@@ -1,8 +1,10 @@
-package com.Dmitry_Elkin.PracticeTaskCRUD.repository;
+package com.Dmitry_Elkin.PracticeTaskCRUD.repository.jdbc;
 
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Developer;
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Skill;
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Status;
+import com.Dmitry_Elkin.PracticeTaskCRUD.repository.SkillRepository;
+import com.Dmitry_Elkin.PracticeTaskCRUD.utils.JdbcUtils;
 
 
 import java.sql.*;
@@ -22,36 +24,40 @@ public class SkillRepositoryImpl implements SkillRepository {
 
 
     @Override
-    public List<Skill> getAll(Status status) {
-        String selectStatement;
-        if (status == null){
-            selectStatement = SELECT_ALL;
-        } else {
-            selectStatement = SELECT_ALL + " where statusId = " + status.getId();
-        }
-
+    public List<Skill> getAll() {
         List<Skill> itemList = new LinkedList<>();
-        Connection connection = DBConnection.getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
+        try (PreparedStatement preparedStatement = JdbcUtils.getPreparedStatement(SELECT_ALL);) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                long id = rs.getLong("id");
-                String name = rs.getString("name");
-                int statusId = rs.getInt("statusId");
-                itemList.add(new Skill(id, name, statusId));
+                itemList.add(convertResultSetToSkill(rs));
             }
         } catch (SQLException e) {
-            StatusRepository.printSQLException(e);
+            JdbcUtils.printSQLException(e);
         }
         return itemList;
     }
 
-
-    //чтоб не переписывать код, где вызывается метод без параметров
     @Override
-    public List<Skill> getAll() {
-        return getAll(null);
+    public List<Skill> getAll(Status status) {
+        String sql;
+        if (status == null){
+            sql = SELECT_ALL;
+        } else {
+            sql = SELECT_ALL + " where statusId = " + status.getId();
+        }
+
+        List<Skill> itemList = new LinkedList<>();
+        try (PreparedStatement preparedStatement = JdbcUtils.getPreparedStatement(sql);) {
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                itemList.add(convertResultSetToSkill(rs));
+            }
+        } catch (SQLException e) {
+            JdbcUtils.printSQLException(e);
+        }
+        return itemList;
     }
 
 
@@ -60,7 +66,7 @@ public class SkillRepositoryImpl implements SkillRepository {
     public Skill getById(Long itemId) {
         String selectStatement = SELECT_ALL + " where id = " + itemId;
         List<Skill> itemList = new LinkedList<>();
-        Connection connection = DBConnection.getConnection();
+        Connection connection = JdbcUtils.getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
             ResultSet rs = preparedStatement.executeQuery();
 
@@ -74,7 +80,7 @@ public class SkillRepositoryImpl implements SkillRepository {
                 return itemList.get(0);
             }
         } catch (SQLException e) {
-            StatusRepository.printSQLException(e);
+            JdbcUtils.printSQLException(e);
         }
         return null;
     }
@@ -82,7 +88,7 @@ public class SkillRepositoryImpl implements SkillRepository {
     public HashSet<Skill> getSkillsFromLinkTable(long developerId){
         HashSet<Skill> itemSet = new HashSet<>();
         String selectStatement = " select * from developer2skills_tbl where developerId = " + developerId;
-        Connection connection = DBConnection.getConnection();
+        Connection connection = JdbcUtils.getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
 
             LinkedList<Long> ids = new LinkedList<>();
@@ -99,13 +105,13 @@ public class SkillRepositoryImpl implements SkillRepository {
             }
 
         } catch (SQLException e) {
-            StatusRepository.printSQLException(e);
+            JdbcUtils.printSQLException(e);
         }
         return itemSet;
     }
 
     public void setSkills2Developer(HashSet<Skill> skills, Developer item){
-        Connection connection = DBConnection.getConnection();
+        Connection connection = JdbcUtils.getConnection();
         HashSet<Skill> currentSkills = getSkillsFromLinkTable(item.getId());
         if (currentSkills.equals(skills)){
             return;
@@ -130,15 +136,15 @@ public class SkillRepositoryImpl implements SkillRepository {
             int[] rows = ps.executeBatch();
             System.out.println("to developer2skills_tbl where added " + (rows.length) +" record(s)");
         } catch (SQLException e) {
-            StatusRepository.printSQLException(e);
+            JdbcUtils.printSQLException(e);
         }
     }
 
+    //TODO: get rid off
     @Override
     public void addOrUpdate(Skill item) {
         //*** add ***
         if (item.getId() <= 0) {
-            item.setNewId();
             insert(item);
         } else {
             //*** update ***
@@ -148,7 +154,8 @@ public class SkillRepositoryImpl implements SkillRepository {
 
 
     public void insert(Skill item) {
-        Connection connection = DBConnection.getConnection();
+        //TODO: move to JdbcUtils
+        Connection connection = JdbcUtils.getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL,
                      Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, item.getName());
@@ -161,12 +168,12 @@ public class SkillRepositoryImpl implements SkillRepository {
 //                rowInserted = true;
             }
         } catch (SQLException e) {
-            StatusRepository.printSQLException(e);
+            JdbcUtils.printSQLException(e);
         }
     }
 
     public void update(Skill item) {
-        Connection connection = DBConnection.getConnection();
+        Connection connection = JdbcUtils.getConnection();
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_SQL)) {
             statement.setString(1, item.getName());
             statement.setInt(2, item.getStatus().getId());
@@ -175,7 +182,7 @@ public class SkillRepositoryImpl implements SkillRepository {
 
 //            rowUpdated = statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            StatusRepository.printSQLException(e);
+            JdbcUtils.printSQLException(e);
         }
     }
 
@@ -190,6 +197,12 @@ public class SkillRepositoryImpl implements SkillRepository {
         update(item);
     }
 
+    private Skill convertResultSetToSkill(ResultSet rs) throws SQLException {
+        long id = rs.getLong("id");
+        String name = rs.getString("name");
+        int statusId = rs.getInt("statusId");
+        return new Skill(id, name, statusId);
+    }
 
 
 }
