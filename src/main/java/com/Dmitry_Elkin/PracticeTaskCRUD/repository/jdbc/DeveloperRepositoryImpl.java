@@ -17,7 +17,7 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
             """
                     INSERT developers_tbl(firstName, lastName, specialtyId, statusId) 
                     VALUES (?, ?, ?, ?)""";
-    private static final String SELECT_ALL = " select * from developers_tbl ";
+    private static final String SELECT_ALL_SQL = " select * from developers_tbl ";
 
     private static final String UPDATE_SQL = "update developers_tbl set firstName = ?, lastName = ?, " +
             "specialtyId = ?, statusId = ? where id = ?;";
@@ -30,9 +30,9 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
     public List<Developer> getAll(Status status) {
         String selectStatement;
         if (status == null){
-            selectStatement = SELECT_ALL;
+            selectStatement = SELECT_ALL_SQL;
         } else {
-            selectStatement = SELECT_ALL+ " where statusId = " + status.getId();
+            selectStatement = SELECT_ALL_SQL + " where statusId = " + status.getId();
         }
 
         List<Developer> itemList = new LinkedList<>();
@@ -48,7 +48,7 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
                 long specialtyId = rs.getLong("specialtyId");
                 int statusId = rs.getInt("statusId");
 
-                skills = skillRepository.getSkillsFromLinkTable(id);
+                skills = skillRepository.getSkillsByDeveloper(id);
 
                 itemList.add(new Developer(id, firstName, secondName, skills,
                         specialtyRepository.getById(specialtyId), Status.getStatusById(statusId) ));
@@ -66,11 +66,11 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
 
     @Override
     public Developer getById(Long itemId) {
-        String selectStatement = SELECT_ALL+ " where id = " + itemId;
+        String selectStatement = SELECT_ALL_SQL + " where id = " + itemId;
 
         List<Developer> itemList = new LinkedList<>();
         HashSet<Skill> skills;
-        skills = skillRepository.getSkillsFromLinkTable(itemId);
+        skills = skillRepository.getSkillsByDeveloper(itemId);
 
         Connection connection = JdbcUtils.getConnection();
         try (PreparedStatement ps = connection.prepareStatement(selectStatement)) {

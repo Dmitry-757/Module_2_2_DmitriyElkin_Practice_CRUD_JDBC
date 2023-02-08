@@ -20,11 +20,11 @@ public class SkillController {
     }
 
     public void insert(Skill item){
-        repository.addOrUpdate(item);
+        repository.insert(item);
     }
 
     public void update(Skill item){
-        repository.addOrUpdate(item);
+        repository.update(item);
     }
 
     public void delete(Skill item){

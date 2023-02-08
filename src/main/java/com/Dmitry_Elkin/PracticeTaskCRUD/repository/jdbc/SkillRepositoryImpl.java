@@ -48,7 +48,7 @@ public class SkillRepositoryImpl implements SkillRepository {
         }
 
         List<Skill> itemList = new LinkedList<>();
-        try (PreparedStatement preparedStatement = JdbcUtils.getPreparedStatement(sql);) {
+        try (PreparedStatement preparedStatement = JdbcUtils.getPreparedStatement(sql)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
@@ -64,17 +64,13 @@ public class SkillRepositoryImpl implements SkillRepository {
 
     @Override
     public Skill getById(Long itemId) {
-        String selectStatement = SELECT_ALL + " where id = " + itemId;
+        String sql = SELECT_ALL + " where id = " + itemId;
         List<Skill> itemList = new LinkedList<>();
-        Connection connection = JdbcUtils.getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
+        try (PreparedStatement preparedStatement = JdbcUtils.getPreparedStatement(sql)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                long id = rs.getLong("id");
-                String name = rs.getString("name");
-                int statusId = rs.getInt("statusId");
-                itemList.add(new Skill(id, name, statusId));
+                itemList.add(convertResultSetToSkill(rs));
             }
             if (itemList.size()>0){
                 return itemList.get(0);
@@ -85,22 +81,19 @@ public class SkillRepositoryImpl implements SkillRepository {
         return null;
     }
 
-    public HashSet<Skill> getSkillsFromLinkTable(long developerId){
+    public HashSet<Skill> getSkillsByDeveloper(long developerId){
         HashSet<Skill> itemSet = new HashSet<>();
-        String selectStatement = " select * from developer2skills_tbl where developerId = " + developerId;
-        Connection connection = JdbcUtils.getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
-
-            LinkedList<Long> ids = new LinkedList<>();
+        String sql = " select * from developer2skills_tbl where developerId = " + developerId;
+        try (PreparedStatement preparedStatement = JdbcUtils.getPreparedStatement(sql)) {
+            LinkedList<Long> idOfSkills = new LinkedList<>();
 
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-//                long id = rs.getLong("id");
                 long skillId = rs.getLong("skillId");
-                ids.add(skillId);
+                idOfSkills.add(skillId);
             }
 
-            for (Long id:ids) {
+            for (Long id:idOfSkills) {
                 itemSet.add(getById(id));
             }
 
@@ -111,76 +104,73 @@ public class SkillRepositoryImpl implements SkillRepository {
     }
 
     public void setSkills2Developer(HashSet<Skill> skills, Developer item){
-        Connection connection = JdbcUtils.getConnection();
-        HashSet<Skill> currentSkills = getSkillsFromLinkTable(item.getId());
+        HashSet<Skill> currentSkills = getSkillsByDeveloper(item.getId());
         if (currentSkills.equals(skills)){
             return;
         }
 
         //let`s write skills to bd
-        try( Statement statement = connection.createStatement();
-             PreparedStatement ps = connection.prepareStatement("INSERT developer2skills_tbl(developerId, skillId) VALUES (?, ?)",
-                     Statement.RETURN_GENERATED_KEYS)) {
+
+//        Connection connection = JdbcUtils.getConnection();
+//        try( Statement statement = connection.createStatement();
+//             PreparedStatement ps = connection.prepareStatement("INSERT developer2skills_tbl(developerId, skillId) VALUES (?, ?)",
+//                     Statement.RETURN_GENERATED_KEYS)) {
+//            //зачистим текущие записи скилов
+//            statement.executeUpdate("delete from developer2skills_tbl where developerId = "+ item.getId());
+        String sqlDelete = "delete from developer2skills_tbl where developerId = "+ item.getId();
+        String sqlInsert = "INSERT developer2skills_tbl(developerId, skillId) VALUES (?, ?)";
+        try (
+                PreparedStatement ps4Delete = JdbcUtils.getPreparedStatement(sqlDelete);
+                PreparedStatement ps4Insert = JdbcUtils.getPreparedStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS);
+        ) {
             //зачистим текущие записи скилов
-            statement.executeUpdate("delete from developer2skills_tbl where developerId = "+ item.getId());
+            ps4Delete.executeUpdate();
+
             //запишем новые
             for (Skill skill : skills) {
-                ps.setLong(1, item.getId());
+                ps4Insert.setLong(1, item.getId());
                 if (skill.getId() == 0) {
                     insert(skill);
                 }
-                ps.setLong(2, skill.getId());
+                ps4Insert.setLong(2, skill.getId());
 
-                ps.addBatch();
+                ps4Insert.addBatch();
             }
-            int[] rows = ps.executeBatch();
+            int[] rows = ps4Insert.executeBatch();
             System.out.println("to developer2skills_tbl where added " + (rows.length) +" record(s)");
         } catch (SQLException e) {
             JdbcUtils.printSQLException(e);
         }
     }
 
-    //TODO: get rid off
+
     @Override
-    public void addOrUpdate(Skill item) {
-        //*** add ***
-        if (item.getId() <= 0) {
-            insert(item);
-        } else {
-            //*** update ***
-            update(item);
-        }
-    }
-
-
     public void insert(Skill item) {
-        //TODO: move to JdbcUtils
-        Connection connection = JdbcUtils.getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL,
-                     Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setString(1, item.getName());
-            preparedStatement.setInt(2, item.getStatus().getId());
+        String sql = "INSERT developer2skills_tbl(developerId, skillId) VALUES (?, ?)";
+        try (
+                PreparedStatement statement = JdbcUtils.getPreparedStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        ) {
+            statement.setString(1, item.getName());
+            statement.setInt(2, item.getStatus().getId());
 
-            preparedStatement.executeUpdate();
-            ResultSet rs = preparedStatement.getGeneratedKeys();
+            statement.executeUpdate();
+            ResultSet rs = statement.getGeneratedKeys();
             if (rs.next()) {
                 item.setId(rs.getInt(1));
-//                rowInserted = true;
             }
         } catch (SQLException e) {
             JdbcUtils.printSQLException(e);
         }
     }
 
+    @Override
     public void update(Skill item) {
-        Connection connection = JdbcUtils.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(UPDATE_SQL)) {
+        try (PreparedStatement statement = JdbcUtils.getPreparedStatement(UPDATE_SQL)) {
             statement.setString(1, item.getName());
             statement.setInt(2, item.getStatus().getId());
             statement.setLong(3, item.getId());
             statement.executeUpdate();
 
-//            rowUpdated = statement.executeUpdate() > 0;
         } catch (SQLException e) {
             JdbcUtils.printSQLException(e);
         }

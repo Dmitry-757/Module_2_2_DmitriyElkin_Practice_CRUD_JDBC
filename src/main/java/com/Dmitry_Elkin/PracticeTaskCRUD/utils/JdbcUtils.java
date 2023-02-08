@@ -1,9 +1,6 @@
 package com.Dmitry_Elkin.PracticeTaskCRUD.utils;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class JdbcUtils {
     private static String username = "root";
@@ -51,6 +48,9 @@ public class JdbcUtils {
         return getConnection().prepareStatement(sql);
     }
 
+    public static PreparedStatement getPreparedStatement(String sql, int parameterIndex) throws SQLException {
+        return getConnection().prepareStatement(sql, parameterIndex);
+    }
 
     public static void printSQLException(SQLException ex) {
         for (Throwable e : ex) {

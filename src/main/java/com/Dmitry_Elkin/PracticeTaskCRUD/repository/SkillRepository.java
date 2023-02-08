@@ -7,7 +7,10 @@ import java.util.List;
 
 public interface SkillRepository extends GenericRepository<Skill, Long>{
     @Override
-    void addOrUpdate(Skill item);
+    void insert(Skill item);
+    @Override
+    void update(Skill item);
+
 
     @Override
     List<Skill> getAll(Status status);
