@@ -15,7 +15,7 @@ import java.util.List;
 public class DeveloperRepositoryImpl implements DeveloperRepository {
     private static final String INSERT_SQL =
             """
-                    INSERT developers_tbl(firstName, lastName, specialtyId, statusId) 
+                    INSERT developers_tbl(firstName, lastName, specialtyId, statusId)
                     VALUES (?, ?, ?, ?)""";
     private static final String SELECT_ALL_SQL = " select * from developers_tbl ";
 
@@ -28,17 +28,16 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
 
     @Override
     public List<Developer> getAll(Status status) {
-        String selectStatement;
+        String sql;
         if (status == null){
-            selectStatement = SELECT_ALL_SQL;
+            sql = SELECT_ALL_SQL;
         } else {
-            selectStatement = SELECT_ALL_SQL + " where statusId = " + status.getId();
+            sql = SELECT_ALL_SQL + " where statusId = " + status.getId();
         }
 
         List<Developer> itemList = new LinkedList<>();
 
-        Connection connection = JdbcUtils.getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
+        try (PreparedStatement preparedStatement = JdbcUtils.getPreparedStatement(sql)) {
             ResultSet rs = preparedStatement.executeQuery();
             HashSet<Skill> skills;
             while (rs.next()) {
@@ -68,39 +67,24 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
     public Developer getById(Long itemId) {
         String selectStatement = SELECT_ALL_SQL + " where id = " + itemId;
 
-        List<Developer> itemList = new LinkedList<>();
-        HashSet<Skill> skills;
-        skills = skillRepository.getSkillsByDeveloper(itemId);
+        HashSet<Skill> skills = skillRepository.getSkillsByDeveloper(itemId);
 
         Connection connection = JdbcUtils.getConnection();
         try (PreparedStatement ps = connection.prepareStatement(selectStatement)) {
             ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
-                long id = rs.getLong("id");
-                String firstName = rs.getString("firstName");
-                String secondName = rs.getString("lastName");
-                long specialtyId = rs.getLong("specialtyId");
-                int statusId = rs.getInt("statusId");
-                Status status = Status.getStatusById(statusId);
-
-                Specialty specialty = specialtyRepository.getById(specialtyId);
-                itemList.add(new Developer(id, firstName, secondName, skills,
-                        specialty, status ));
+            if (rs.next()) {
+                return convertResultSetToDeveloper(rs, skills);
             }
         } catch (SQLException e) {
             JdbcUtils.printSQLException(e);
         }
-        if (itemList.size()>0){
-            return itemList.get(0);
-        } else {
-            return null;
-        }
+        return null;
 
     }
 
 
-    public void insert(Developer item){
+    public Developer insert(Developer item){
         Connection connection = JdbcUtils.getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL,
                      Statement.RETURN_GENERATED_KEYS)) {
@@ -115,7 +99,6 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
             ResultSet rs = preparedStatement.getGeneratedKeys();
             if (rs.next()) {
                 item.setId(rs.getInt(1));
-//                rowInserted = true;
             }
             //let`s write skills to bd
             try( PreparedStatement ps = connection.prepareStatement("INSERT developer2skills_tbl(developerId, skillId) VALUES (?, ?)",
@@ -130,19 +113,23 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
             } catch (SQLException e) {
                 JdbcUtils.printSQLException(e);
             }
-
             connection.commit();
+
+            return getById(item.getId());
 
         } catch (SQLException e) {
             JdbcUtils.printSQLException(e);
         }
+        return null;
     }
 
-    public void update(Developer item){
+    public Developer update(Developer item){
 
         Connection connection = JdbcUtils.getConnection();
         try(PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
+
             connection.setAutoCommit(false);
+
             preparedStatement.setString(1, item.getFirstName());
             preparedStatement.setString(2, item.getLastName());
             preparedStatement.setLong(3, item.getSpecialty().getId());
@@ -160,6 +147,9 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
         } catch (SQLException e) {
             JdbcUtils.printSQLException(e);
         }
+
+        return getById(item.getId());
+
     }
 
 
@@ -173,5 +163,21 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
         item.setUnDeleted();
         update(item);
     }
+
+    private Developer convertResultSetToDeveloper(ResultSet rs, HashSet<Skill> skills) throws SQLException {
+
+        long id = rs.getLong("id");
+        String firstName = rs.getString("firstName");
+        String secondName = rs.getString("lastName");
+        long specialtyId = rs.getLong("specialtyId");
+        int statusId = rs.getInt("statusId");
+        Status status = Status.getStatusById(statusId);
+
+        Specialty specialty = specialtyRepository.getById(specialtyId);
+        return new Developer(id, firstName, secondName, skills,
+                specialty, status );
+
+    }
+
 
 }
