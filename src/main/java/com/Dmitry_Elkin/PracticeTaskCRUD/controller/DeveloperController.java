@@ -19,12 +19,12 @@ public class DeveloperController {
         return repository.getAll();
     }
 
-    public void insert(Developer item){
-        repository.addOrUpdate(item);
+    public Developer insert(Developer item){
+        return repository.insert(item);
     }
 
-    public void update(Developer item){
-        repository.addOrUpdate(item);
+    public Developer update(Developer item){
+        return repository.update(item);
     }
 
     public void delete(Developer item){

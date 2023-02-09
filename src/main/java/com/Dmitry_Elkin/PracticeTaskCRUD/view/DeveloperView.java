@@ -53,11 +53,10 @@ public class DeveloperView {
         String firstName = getStringParamFromConsole("first name");
         String lastName = getStringParamFromConsole("second name");
 
-//        HashSet<Skill> skills = new HashSet<>(getGenericListFromConsole("Skill", RepositoryFactory.getSkillRepository()));
         HashSet<Skill> skills = new HashSet<>(getGenericListFromConsole("Skill", skillController.getAll()));
-
         Specialty specialty = getItemFromConsole("Specialty", specialtyController.getAll());
-        controller.insert(new Developer(firstName, lastName, skills, specialty));
+
+        ConsoleService.printItems(controller.insert(new Developer(firstName, lastName, skills, specialty)));
     }
 
 
@@ -78,14 +77,11 @@ public class DeveloperView {
             if (specialty != null) {
                 item.setSpecialty(specialty);
             }
-            controller.update(item);
+            ConsoleService.printItems(controller.update(item));
         }
 
     }
 
-//    public void printItems(Status status) {
-//        Service.printItems(status, repository);
-//    }
     private void printItems(Status status) {
         ConsoleService.printItems(controller.getAll(status));
     }
@@ -96,7 +92,6 @@ public class DeveloperView {
 
 
     private void deleteItem() {
-//        Developer item = getGenericParamFromConsole("Developer", repository, Status.ACTIVE);
         Developer item = ConsoleService.getItemFromConsole("Developer",controller.getAll(Status.ACTIVE));
         if (item != null) {
             System.out.println("deleting item is : " + item);
@@ -106,7 +101,6 @@ public class DeveloperView {
     }
 
     private void unDeleteItem() {
-//        Developer item = getGenericParamFromConsole("Developer", repository, Status.DELETED);
         Developer item = ConsoleService.getItemFromConsole("Developer",controller.getAll(Status.DELETED));
         if (item != null) {
             System.out.println("UnDeleting item is : " + item);
