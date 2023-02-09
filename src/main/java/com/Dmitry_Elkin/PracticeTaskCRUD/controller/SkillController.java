@@ -19,12 +19,12 @@ public class SkillController {
         return repository.getAll(status);
     }
 
-    public void insert(Skill item){
-        repository.insert(item);
+    public Skill insert(Skill item){
+        return repository.insert(item);
     }
 
-    public void update(Skill item){
-        repository.update(item);
+    public Skill update(Skill item){
+        return repository.update(item);
     }
 
     public void delete(Skill item){

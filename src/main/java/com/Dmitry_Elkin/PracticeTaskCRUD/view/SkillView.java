@@ -8,10 +8,8 @@ import com.Dmitry_Elkin.PracticeTaskCRUD.model.Status;
 import static com.Dmitry_Elkin.PracticeTaskCRUD.view.MainView.sc;
 import static com.Dmitry_Elkin.PracticeTaskCRUD.view.ConsoleService.getStringParamFromConsole;
 
-
 public class SkillView {
 
-//    private static final SkillRepository repository = RepositoryFactory.getSkillRepository();
     private final SkillController controller = new SkillController();
 
 
@@ -45,24 +43,21 @@ public class SkillView {
 
     private void createNewItem() {
         String name = getStringParamFromConsole("first name");
-        controller.insert(new Skill(name));
+        ConsoleService.printItems(controller.insert(new Skill(name)));
     }
 
     private void changeItem() {
-//        Skill item = getGenericParamFromConsole("Skill", repository);
         Skill item = ConsoleService.getItemFromConsole("Skill",controller.getAll());
 
         if (item != null) {
             System.out.println("editing item = " + item);
             String newName = getStringParamFromConsole("name");
             item.setName(newName);
-            controller.update(item);
+//            controller.update(item);
+            ConsoleService.printItems(controller.update(item));
         }
     }
 
-//    private void printItems(Status status) {
-//        Service.printItems(status, repository);
-//    }
     private void printItems(Status status) {
         ConsoleService.printItems(controller.getAll(status));
     }

@@ -39,22 +39,21 @@ public class SpecialtyView {
 
     void createNewItem() {
         String name = ConsoleService.getStringParamFromConsole("name");
-        controller.insert(name);
+        ConsoleService.printItems(controller.insert(name));
     }
 
     private void changeItem() {
-
         Specialty item = ConsoleService.getItemFromConsole("Specialty",controller.getAll());
         if (item != null) {
             System.out.println("editing item = " + item);
             String newName = ConsoleService.getStringParamFromConsole("name");
             if (!newName.equals(item.getName())) {
                 item.setName(newName);
-                controller.update(item);
+                ConsoleService.printItems(controller.update(item));
             }
         }
-
     }
+
     private void printItems(Status status) {
         ConsoleService.printItems(controller.getAll(status));
     }
@@ -74,7 +73,6 @@ public class SpecialtyView {
     }
 
     private void unDeleteItem() {
-//        Specialty item = getGenericParamFromConsole("Specialty", repository, Status.DELETED);
         Specialty item = ConsoleService.getItemFromConsole("Specialty",controller.getAll(Status.DELETED));
         if (item != null) {
             System.out.println("UnDeleting item is : " + item);

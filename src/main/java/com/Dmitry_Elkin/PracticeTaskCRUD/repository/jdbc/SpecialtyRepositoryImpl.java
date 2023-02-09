@@ -22,23 +22,20 @@ public class SpecialtyRepositoryImpl implements SpecialtyRepository {
 
     @Override
     public List<Specialty> getAll(Status status) {
-        String selectStatement;
-        if (status == null) {
-            selectStatement = SELECT_ALL;
+
+        String sql;
+        if (status == null){
+            sql = SELECT_ALL;
         } else {
-            selectStatement = SELECT_ALL + " where statusId = " + status.getId();
+            sql = SELECT_ALL + " where statusId = " + status.getId();
         }
 
         List<Specialty> itemList = new LinkedList<>();
-        Connection connection = JdbcUtils.getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
+        try (PreparedStatement preparedStatement = JdbcUtils.getPreparedStatement(sql)) {
             ResultSet rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
-                long id = rs.getLong("id");
-                String name = rs.getString("name");
-                int statusId = rs.getInt("statusId");
-                itemList.add(new Specialty(id, name, statusId));
+                itemList.add(convertResultSetToSpecialty(rs));
             }
         } catch (SQLException e) {
             JdbcUtils.printSQLException(e);
@@ -47,7 +44,6 @@ public class SpecialtyRepositoryImpl implements SpecialtyRepository {
         return itemList;
     }
 
-    //чтоб не переписывать код, где вызывается метод без параметров
     @Override
     public List<Specialty> getAll() {
         return getAll(null);
@@ -55,20 +51,12 @@ public class SpecialtyRepositoryImpl implements SpecialtyRepository {
 
     @Override
     public Specialty getById(Long itemId) {
-        String selectStatement = SELECT_ALL + " where id = " + itemId;
-        List<Specialty> itemList = new LinkedList<>();
-        Connection connection = JdbcUtils.getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(selectStatement)) {
+        String sql = SELECT_ALL + " where id = " + itemId;
+        try (PreparedStatement preparedStatement = JdbcUtils.getPreparedStatement(sql)) {
             ResultSet rs = preparedStatement.executeQuery();
 
-            while (rs.next()) {
-                long id = rs.getLong("id");
-                String name = rs.getString("name");
-                int statusId = rs.getInt("statusId");
-                itemList.add(new Specialty(id, name, statusId));
-            }
-            if (itemList.size() > 0) {
-                return itemList.get(0);
+            if (rs.next()) {
+                return convertResultSetToSpecialty(rs);
             }
         } catch (SQLException e) {
             JdbcUtils.printSQLException(e);
@@ -77,22 +65,8 @@ public class SpecialtyRepositoryImpl implements SpecialtyRepository {
     }
 
     @Override
-    public void addOrUpdate(Specialty item) {
-        //*** add ***
-        if (item.getId() <= 0) {
-//            item.setNewId();
-            insert(item);
-        } else {
-            //*** update ***
-            update(item);
-        }
-    }
-
-
-    public void insert(Specialty item) {
-        Connection connection = JdbcUtils.getConnection();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SQL,
-                Statement.RETURN_GENERATED_KEYS)) {
+    public Specialty insert(Specialty item) {
+        try (PreparedStatement preparedStatement = JdbcUtils.getPreparedStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, item.getName());
             preparedStatement.setInt(2, item.getStatus().getId());
 
@@ -100,26 +74,23 @@ public class SpecialtyRepositoryImpl implements SpecialtyRepository {
             ResultSet rs = preparedStatement.getGeneratedKeys();
             if (rs.next()) {
                 item.setId(rs.getInt(1));
-//                rowInserted = true;
             }
         } catch (SQLException e) {
             JdbcUtils.printSQLException(e);
         }
+        return getById(item.getId());
     }
 
-    public void update(Specialty item) {
-        Connection connection = JdbcUtils.getConnection();
-        try (PreparedStatement statement = connection.prepareStatement(UPDATE_SQL)) {
-            statement.setString(1, item.getName());
-            statement.setInt(2, item.getStatus().getId());
-            statement.setLong(3, item.getId());
-            statement.executeUpdate();
-
-//            rowUpdated = statement.executeUpdate() > 0;
+    public Specialty update(Specialty item) {
+        try (PreparedStatement preparedStatement = JdbcUtils.getPreparedStatement(UPDATE_SQL)) {
+            preparedStatement.setString(1, item.getName());
+            preparedStatement.setInt(2, item.getStatus().getId());
+            preparedStatement.setLong(3, item.getId());
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             JdbcUtils.printSQLException(e);
         }
-
+        return getById(item.getId());
     }
 
     @Override
@@ -132,6 +103,13 @@ public class SpecialtyRepositoryImpl implements SpecialtyRepository {
     public void unDelete(Specialty item) {
         item.setUnDeleted();
         update(item);
+    }
+
+    private Specialty convertResultSetToSpecialty(ResultSet rs) throws SQLException {
+        long id = rs.getLong("id");
+        String name = rs.getString("name");
+        int statusId = rs.getInt("statusId");
+        return new Specialty(id, name, statusId);
     }
 
 
