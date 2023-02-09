@@ -99,17 +99,6 @@ public class DeveloperRepositoryImpl implements DeveloperRepository {
 
     }
 
-    @Override
-    public void addOrUpdate(Developer item) {
-        //*** add ***
-        if (item.getId() <= 0) {
-            insert(item);
-        }else {
-           //*** update ***
-            update(item);
-        }
-    }
-
 
     public void insert(Developer item){
         Connection connection = JdbcUtils.getConnection();
