@@ -1,6 +1,7 @@
 package com.Dmitry_Elkin.PracticeTaskCRUD.controller;
 
 
+import com.Dmitry_Elkin.PracticeTaskCRUD.model.Skill;
 import com.Dmitry_Elkin.PracticeTaskCRUD.model.Specialty;
 import com.Dmitry_Elkin.PracticeTaskCRUD.repository.jdbc.SpecialtyRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,17 +24,17 @@ class SpecialtyControllerTest {
     @Mock
     SpecialtyRepositoryImpl mockRepository;
 
-    SpecialtyController specialtyController;
+    SpecialtyController controller;
 
     @BeforeEach
     void setUp() {
-        specialtyController = new SpecialtyController();
+        controller = new SpecialtyController();
         Field repository;
         try {
-            repository = specialtyController.getClass()
+            repository = controller.getClass()
                     .getDeclaredField("repository");
             repository.setAccessible(true);
-            repository.set(specialtyController, mockRepository);
+            repository.set(controller, mockRepository);
         } catch (NoSuchFieldException e) {
             System.out.println(e.getMessage());
         } catch (IllegalAccessException e) {
@@ -45,37 +46,46 @@ class SpecialtyControllerTest {
     @Test
     void getAllItemsTest(){
 
-        List<Specialty> specialties = new LinkedList<>();
-        specialties.add(new Specialty("Specialty 1"));
-        specialties.add(new Specialty("Specialty 2"));
+        List<Specialty> items = new LinkedList<>();
+        items.add(new Specialty("Item 1"));
+        items.add(new Specialty("Item 2"));
 
-        Mockito.when(mockRepository.getAll()).thenReturn(specialties);//задаем поведение для заглушки
+        Mockito.when(mockRepository.getAll()).thenReturn(items);//задаем поведение для заглушки
 
-        assertThat(specialtyController.getAll()).isEqualTo(specialties);
+        assertThat(controller.getAll()).isEqualTo(items);
         Mockito.verify(mockRepository).getAll();
     }
 
     @Test
     void getItemByIdTest(){
 
-        Specialty sp = new Specialty("Specialty 1");
-        Mockito.when(mockRepository.getById(1L)).thenReturn(sp);//задаем поведение для заглушки
+        Specialty item = new Specialty("Item 1");
+        Mockito.when(mockRepository.getById(1L)).thenReturn(item);//задаем поведение для заглушки
 
-        assertThat(specialtyController.getById(1L)).isEqualTo(sp);
+        assertThat(controller.getById(1L)).isEqualTo(item);
         Mockito.verify(mockRepository).getById(1L);
     }
 
 
     @Test
     public void createNewItemTest(){
-        specialtyController.insert("Test Specialty");
-        Mockito.verify(mockRepository).addOrUpdate(new Specialty("Test Specialty"));
+        Specialty item = new Specialty("Test Item");
+        Specialty expectedItem = new Specialty(1L,"Test Item");
+        Mockito.when(mockRepository.insert(item)).thenReturn(expectedItem);//задаем поведение для заглушки
+
+        assertThat(controller.insert(item)).isEqualTo(expectedItem);
+        Mockito.verify(mockRepository).insert(item);
+
     }
 
     @Test
     public void updateItemTest(){
-        specialtyController.update(new Specialty("updated Specialty"));
-        Mockito.verify(mockRepository).addOrUpdate(new Specialty("updated Specialty"));
+        Specialty item = new Specialty(2L,"updated Item");
+        Specialty expectedItem = new Specialty(2L,"updated Item");
+        Mockito.when(mockRepository.update(item)).thenReturn(expectedItem);//задаем поведение для заглушки
+
+        assertThat(controller.update(item)).isEqualTo(expectedItem);
+        Mockito.verify(mockRepository).update(item);
     }
 
 

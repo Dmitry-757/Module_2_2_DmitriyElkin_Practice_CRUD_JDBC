@@ -39,7 +39,8 @@ public class SpecialtyView {
 
     void createNewItem() {
         String name = ConsoleService.getStringParamFromConsole("name");
-        ConsoleService.printItems(controller.insert(name));
+        Specialty item = new Specialty(name);
+        ConsoleService.printItems(controller.insert(item));
     }
 
     private void changeItem() {

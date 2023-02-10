@@ -47,8 +47,8 @@ class SkillsControllerTest {
     void getAllItemsTest(){
 
         List<Skill> items = new LinkedList<>();
-        items.add(new Skill("Skill 1"));
-        items.add(new Skill("Skill 2"));
+        items.add(new Skill("Item 1"));
+        items.add(new Skill("Item 2"));
 
         Mockito.when(mockRepository.getAll()).thenReturn(items);//задаем поведение для заглушки
 
@@ -59,7 +59,7 @@ class SkillsControllerTest {
     @Test
     void getItemByIdTest(){
 
-        Skill item = new Skill("Skill 1");
+        Skill item = new Skill("Item 1");
         Mockito.when(mockRepository.getById(1L)).thenReturn(item);//задаем поведение для заглушки
 
         assertThat(controller.getById(1L)).isEqualTo(item);
@@ -69,14 +69,23 @@ class SkillsControllerTest {
 
     @Test
     public void createNewItemTest(){
-        controller.insert(new Skill("Test Skill"));
-        Mockito.verify(mockRepository).addOrUpdate(new Skill("Test Skill"));
+        Skill item = new Skill("Test Item");
+        Skill expectedItem = new Skill(1L,"Test Item");
+        Mockito.when(mockRepository.insert(item)).thenReturn(expectedItem);//задаем поведение для заглушки
+
+        assertThat(controller.insert(item)).isEqualTo(expectedItem);
+        Mockito.verify(mockRepository).insert(item);
+
     }
 
     @Test
     public void updateItemTest(){
-        controller.update(new Skill("updated Skill"));
-        Mockito.verify(mockRepository).addOrUpdate(new Skill("updated Skill"));
+        Skill item = new Skill(2L,"updated Item");
+        Skill expectedItem = new Skill(2L,"updated Item");
+        Mockito.when(mockRepository.update(item)).thenReturn(expectedItem);//задаем поведение для заглушки
+
+        assertThat(controller.update(item)).isEqualTo(expectedItem);
+        Mockito.verify(mockRepository).update(item);
     }
 
 

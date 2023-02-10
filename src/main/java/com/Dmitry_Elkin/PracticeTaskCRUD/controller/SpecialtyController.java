@@ -22,8 +22,7 @@ public class SpecialtyController {
         return repository.getAll();
     }
 
-    public Specialty insert(String name) {
-        Specialty item = new Specialty(name);
+    public Specialty insert(Specialty item) {
         return repository.insert(item);
     }
 
